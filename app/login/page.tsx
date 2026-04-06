@@ -1,17 +1,15 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import { GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "firebase/auth";
 import { firebaseAuth } from "@/lib/firebase/client";
 import { Icons } from "../components/Icons";
 
 function clearAuthCache() {
   if (typeof window !== "undefined") {
-    // Clear Firebase auth state
     firebaseAuth.signOut().catch(() => {});
-    // Clear localStorage
     localStorage.clear();
-    // Clear sessionStorage
     sessionStorage.clear();
   }
 }
@@ -19,7 +17,9 @@ function clearAuthCache() {
 type AuthMode = "choose" | "login" | "register";
 type Status = "idle" | "pending" | "creating_session" | "error";
 
-export default function LoginPage() {
+function LoginPageContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [mode, setMode] = useState<AuthMode>("choose");
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string | null>(null);
@@ -28,6 +28,12 @@ export default function LoginPage() {
   // Clear any cached auth state when entering login page
   useEffect(() => {
     clearAuthCache();
+    
+    // Check for mode=register in URL
+    const urlMode = searchParams.get("mode");
+    if (urlMode === "register") {
+      setMode("register");
+    }
     
     // Quick check if already authenticated via session cookie
     const checkSession = async () => {
@@ -39,9 +45,9 @@ export default function LoginPage() {
         if (res.ok) {
           const data = await res.json();
           if (data.authenticated && data.hasProfile) {
-            window.location.href = "/dashboard";
+            router.push("/dashboard");
           } else if (data.authenticated && !data.hasProfile) {
-            window.location.href = "/onboarding";
+            router.push("/onboarding");
           }
         }
       } catch (e) {
@@ -49,7 +55,7 @@ export default function LoginPage() {
       }
     };
     checkSession();
-  }, []);
+  }, [searchParams]);
 
   // Đồng bộ ref với state để dùng trong useEffect
   useEffect(() => {
@@ -98,7 +104,7 @@ export default function LoginPage() {
             return;
           }
           // Chưa có → đến onboarding điền thông tin
-          window.location.href = "/onboarding";
+          router.push("/onboarding");
         } else {
           // Đăng nhập: phải có profile
           if (!hasProfile) {
@@ -108,7 +114,7 @@ export default function LoginPage() {
             setError("Tài khoản này chưa đăng ký. Vui lòng chọn Đăng ký.");
             return;
           }
-          window.location.href = "/dashboard";
+          router.push("/dashboard");
         }
       } catch (e: any) {
         setStatus("error");
@@ -158,7 +164,7 @@ export default function LoginPage() {
             setError("Tài khoản Google này đã được đăng ký. Vui lòng chọn Đăng nhập.");
             return;
           }
-          window.location.href = "/onboarding";
+          router.push("/onboarding");
         } else {
           if (!hasProfile) {
             await signOut(firebaseAuth);
@@ -167,7 +173,7 @@ export default function LoginPage() {
             setError("Tài khoản này chưa đăng ký. Vui lòng chọn Đăng ký.");
             return;
           }
-          window.location.href = "/dashboard";
+          router.push("/dashboard");
         }
       }
     } catch (e: any) {
@@ -334,6 +340,14 @@ export default function LoginPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>Loading...</div>}>
+      <LoginPageContent />
+    </Suspense>
   );
 }
 

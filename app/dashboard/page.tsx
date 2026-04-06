@@ -6,6 +6,7 @@ import { signOut, onAuthStateChanged } from "firebase/auth";
 import { firebaseAuth } from "@/lib/firebase/client";
 import MainLayout from "../components/MainLayout";
 import { Icons } from "../components/Icons";
+import Link from "next/link";
 
 interface BlogPost {
   id: number;
@@ -84,10 +85,10 @@ export default function DashboardPage() {
   const [todos, setTodos] = useState<TodoItem[]>([]);
   const [newTodo, setNewTodo] = useState("");
   const [showTodoInput, setShowTodoInput] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
-    let timeoutId: NodeJS.Timeout;
 
     const checkAuth = async () => {
       try {
@@ -98,36 +99,32 @@ export default function DashboardPage() {
 
         if (!isMounted) return;
 
-        if (sessionRes.status === 401) {
-          router.push("/login");
-          return;
-        }
-
-        const sessionData = await sessionRes.json();
-        
-        if (!isMounted) return;
-
-        if (sessionData.hasProfile) {
-          const res = await fetch("/api/student", {
-            credentials: "include"
-          });
-          
-          if (!isMounted) return;
-          
-          if (res.ok) {
-            const data = await res.json();
-            if (isMounted) {
-              setProfile(data.profile);
+        if (sessionRes.ok) {
+          const sessionData = await sessionRes.json();
+          if (sessionData.authenticated) {
+            setIsAuthenticated(true);
+            
+            if (sessionData.hasProfile) {
+              const res = await fetch("/api/student", {
+                credentials: "include"
+              });
+              
+              if (!isMounted) return;
+              
+              if (res.ok) {
+                const data = await res.json();
+                if (isMounted) {
+                  setProfile(data.profile);
+                }
+              }
+            } else {
+              router.push("/onboarding");
+              return;
             }
           }
-        } else {
-          router.push("/onboarding");
-          return;
         }
       } catch (e) {
-        if (isMounted) {
-          router.push("/login");
-        }
+        console.error("Auth check error:", e);
       } finally {
         if (isMounted) {
           setLoading(false);
@@ -139,21 +136,12 @@ export default function DashboardPage() {
 
     const unsub = onAuthStateChanged(firebaseAuth, (user) => {
       if (!isMounted) return;
-      if (!user) {
-        router.push("/login");
-      }
+      setIsAuthenticated(!!user);
     });
-
-    timeoutId = setTimeout(() => {
-      if (isMounted && loading) {
-        router.push("/login");
-      }
-    }, 10000);
 
     return () => {
       isMounted = false;
       unsub();
-      clearTimeout(timeoutId);
     };
   }, [router]);
 
@@ -246,9 +234,25 @@ export default function DashboardPage() {
       userName={profile?.name} 
       userGrade={profile?.grade}
       onLogout={handleLogout}
+      isAuthenticated={isAuthenticated}
     >
       <div style={S.pageWrapper}>
         {/* Welcome Banner - Compact */}
+        {!isAuthenticated && (
+          <div style={S.welcomeBanner}>
+            <div style={S.welcomeBannerInner}>
+              <div style={S.welcomeContent}>
+                <h1 style={S.welcomeTitle}>
+                  Chào mừng bạn đến với <span style={S.highlightName}>EduFlow</span>
+                </h1>
+                <p style={S.welcomeSubtitle}>
+                  Hãy đăng nhập để trải nghiệm đầy đủ tính năng
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+        {isAuthenticated && (
         <div style={S.welcomeBanner}>
           <div style={S.welcomeBannerInner}>
             <div style={S.welcomeContent}>
@@ -261,6 +265,7 @@ export default function DashboardPage() {
             </div>
           </div>
         </div>
+        )}
 
         {/* Floating Stats Cards - Overlap between green and white */}
         <div style={S.floatingStatsContainer}>
@@ -340,6 +345,26 @@ export default function DashboardPage() {
           </div>
         </div>
 
+        {/* Login Prompt for non-authenticated users */}
+        {!isAuthenticated && (
+          <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 48px", marginTop: 24 }}>
+            <div style={{ background: "linear-gradient(135deg, #fef3c7, #fde68a)", borderRadius: 16, padding: 24, textAlign: "center" }}>
+              <h3 style={{ margin: "0 0 12px", color: "#92400e" }}>Đăng nhập để sử dụng đầy đủ tính năng</h3>
+              <p style={{ margin: "0 0 20px", color: "#a16207" }}>
+                Bạn có thể xem giao diện, nhưng để làm bài kiểm tra và lưu kết quả, hãy đăng nhập hoặc đăng ký tài khoản.
+              </p>
+              <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
+                <Link href="/login" style={{ padding: "12px 24px", background: "#0891b2", color: "#fff", borderRadius: 10, textDecoration: "none", fontWeight: 600 }}>
+                  Đăng nhập
+                </Link>
+                <Link href="/register" style={{ padding: "12px 24px", background: "#fff", color: "#0891b2", borderRadius: 10, textDecoration: "none", fontWeight: 600, border: "2px solid #0891b2" }}>
+                  Đăng ký
+                </Link>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Main Content */}
         <div style={S.mainContent}>
           {/* Left Column */}
@@ -351,6 +376,12 @@ export default function DashboardPage() {
                 <a 
                   href="/exam" 
                   style={S.actionCard}
+                  onClick={(e) => {
+                    if (!isAuthenticated) {
+                      e.preventDefault();
+                      router.push("/login");
+                    }
+                  }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.transform = "translateY(-4px) scale(1.02)";
                     e.currentTarget.style.boxShadow = "0 12px 40px rgba(8, 145, 178, 0.2)";

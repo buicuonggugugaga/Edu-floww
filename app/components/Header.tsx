@@ -9,14 +9,15 @@ interface NavItem {
   href: string;
   label: string;
   icon: React.ReactNode;
+  requireAuth?: boolean;
 }
 
 const navItems: NavItem[] = [
   { href: "/dashboard", label: "Trang chủ", icon: <Icons.Home /> },
-  { href: "/exam", label: "Kiểm tra", icon: <Icons.Exam /> },
-  { href: "/roadmap", label: "Lộ trình", icon: <Icons.Roadmap /> },
-  { href: "/scores", label: "Điểm số", icon: <Icons.Score /> },
-  { href: "/todo", label: "Việc cần làm", icon: <Icons.Check /> },
+  { href: "/exam", label: "Kiểm tra", icon: <Icons.Exam />, requireAuth: true },
+  { href: "/roadmap", label: "Lộ trình", icon: <Icons.Roadmap />, requireAuth: true },
+  { href: "/scores", label: "Điểm số", icon: <Icons.Score />, requireAuth: true },
+  { href: "/todo", label: "Việc cần làm", icon: <Icons.Check />, requireAuth: true },
 ];
 
 const LogoIcon = () => (
@@ -37,9 +38,10 @@ interface HeaderProps {
   userName?: string;
   userGrade?: number;
   onLogout?: () => void;
+  isAuthenticated?: boolean;
 }
 
-export default function Header({ userName, userGrade, onLogout }: HeaderProps) {
+export default function Header({ userName, userGrade, onLogout, isAuthenticated = false }: HeaderProps) {
   const router = useRouter();
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -61,7 +63,14 @@ export default function Header({ userName, userGrade, onLogout }: HeaderProps) {
     } catch (e) {
       console.error("Logout error:", e);
     }
-    router.push("/login");
+    router.refresh();
+  };
+
+  const handleNavClick = (e: React.MouseEvent, requireAuth?: boolean) => {
+    if (requireAuth && !isAuthenticated) {
+      e.preventDefault();
+      router.push("/login");
+    }
   };
 
   return (
@@ -78,6 +87,7 @@ export default function Header({ userName, userGrade, onLogout }: HeaderProps) {
               key={item.href} 
               href={item.href} 
               style={styles.navLink}
+              onClick={(e) => handleNavClick(e, item.requireAuth)}
               onMouseEnter={(e) => {
                 e.currentTarget.style.background = "linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)";
                 e.currentTarget.style.color = "#fff";
@@ -96,47 +106,60 @@ export default function Header({ userName, userGrade, onLogout }: HeaderProps) {
         </nav>
 
         <div style={styles.actions}>
-          {userName && (
-            <div style={styles.userInfo}>
-              <div style={styles.userAvatar}>
-                <Icons.User />
-              </div>
-              <div style={styles.userDetails}>
-                <span style={styles.userName}>{userName}</span>
-                {userGrade && (
-                  <span style={styles.userGrade}>Lớp {userGrade}</span>
-                )}
-              </div>
-            </div>
+          {isAuthenticated ? (
+            <>
+              {userName && (
+                <div style={styles.userInfo}>
+                  <div style={styles.userAvatar}>
+                    <Icons.User />
+                  </div>
+                  <div style={styles.userDetails}>
+                    <span style={styles.userName}>{userName}</span>
+                    {userGrade && (
+                      <span style={styles.userGrade}>Lớp {userGrade}</span>
+                    )}
+                  </div>
+                </div>
+              )}
+              <Link 
+                href="/settings" 
+                style={styles.iconBtn}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = "linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)";
+                  e.currentTarget.style.color = "#fff";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = "#f8fafc";
+                  e.currentTarget.style.color = "#64748b";
+                }}
+              >
+                <Icons.Settings />
+              </Link>
+              <button 
+                onClick={handleLogout} 
+                style={styles.iconBtn}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = "#fee2e2";
+                  e.currentTarget.style.color = "#ef4444";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = "#f8fafc";
+                  e.currentTarget.style.color = "#64748b";
+                }}
+              >
+                <Icons.Logout />
+              </button>
+            </>
+          ) : (
+            <>
+              <Link href="/login" style={styles.loginBtn}>
+                Đăng nhập
+              </Link>
+              <Link href="/register" style={styles.registerBtn}>
+                Đăng ký
+              </Link>
+            </>
           )}
-          <Link 
-            href="/settings" 
-            style={styles.iconBtn}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = "linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)";
-              e.currentTarget.style.color = "#fff";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = "#f8fafc";
-              e.currentTarget.style.color = "#64748b";
-            }}
-          >
-            <Icons.Settings />
-          </Link>
-          <button 
-            onClick={handleLogout} 
-            style={styles.iconBtn}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = "#fee2e2";
-              e.currentTarget.style.color = "#ef4444";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = "#f8fafc";
-              e.currentTarget.style.color = "#64748b";
-            }}
-          >
-            <Icons.Logout />
-          </button>
         </div>
 
         <button 
@@ -154,20 +177,40 @@ export default function Header({ userName, userGrade, onLogout }: HeaderProps) {
               key={item.href} 
               href={item.href} 
               style={styles.mobileNavLink}
-              onClick={() => setMobileMenuOpen(false)}
+              onClick={(e) => {
+                if (item.requireAuth && !isAuthenticated) {
+                  e.preventDefault();
+                  router.push("/login");
+                }
+                setMobileMenuOpen(false);
+              }}
             >
               <span style={styles.navIcon}>{item.icon}</span>
               <span>{item.label}</span>
             </Link>
           ))}
-          <Link href="/settings" style={styles.mobileNavLink} onClick={() => setMobileMenuOpen(false)}>
-            <Icons.Settings />
-            <span>Cài đặt</span>
-          </Link>
-          <button onClick={handleLogout} style={styles.mobileNavLink}>
-            <Icons.Logout />
-            <span>Đăng xuất</span>
-          </button>
+          {isAuthenticated ? (
+            <>
+              <Link href="/settings" style={styles.mobileNavLink} onClick={() => setMobileMenuOpen(false)}>
+                <Icons.Settings />
+                <span>Cài đặt</span>
+              </Link>
+              <button onClick={handleLogout} style={styles.mobileNavLink}>
+                <Icons.Logout />
+                <span>Đăng xuất</span>
+              </button>
+            </>
+          ) : (
+            <>
+              <Link href="/login" style={styles.mobileNavLink} onClick={() => setMobileMenuOpen(false)}>
+                <Icons.User />
+                <span>Đăng nhập</span>
+              </Link>
+              <Link href="/register" style={{ ...styles.mobileNavLink, background: "linear-gradient(135deg, #0891b2, #06b6d4)", color: "#fff" }} onClick={() => setMobileMenuOpen(false)}>
+                <span>Đăng ký</span>
+              </Link>
+            </>
+          )}
         </div>
       )}
     </header>
@@ -325,5 +368,29 @@ const styles: Record<string, React.CSSProperties> = {
     width: "100%",
     textAlign: "left",
     cursor: "pointer",
+  },
+  loginBtn: {
+    padding: "10px 20px",
+    borderRadius: 10,
+    border: "2px solid #0891b2",
+    background: "transparent",
+    color: "#0891b2",
+    fontSize: 14,
+    fontWeight: 600,
+    cursor: "pointer",
+    textDecoration: "none",
+    transition: "all 0.2s ease",
+  },
+  registerBtn: {
+    padding: "10px 20px",
+    borderRadius: 10,
+    border: "none",
+    background: "linear-gradient(135deg, #0891b2, #06b6d4)",
+    color: "#fff",
+    fontSize: 14,
+    fontWeight: 600,
+    cursor: "pointer",
+    textDecoration: "none",
+    transition: "all 0.2s ease",
   },
 };

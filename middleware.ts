@@ -18,15 +18,18 @@ export function middleware(req: NextRequest) {
 
   // Pages công khai (không cần đăng nhập)
   const isPublicPage =
+    pathname === "/" ||
+    pathname.startsWith("/dashboard") ||
     pathname.startsWith("/login") ||
-    pathname.startsWith("/onboarding");
+    pathname.startsWith("/onboarding") ||
+    pathname.startsWith("/register");
 
   if (isPublicPage) {
-    // Nếu đã đăng nhập rồi thì redirect về dashboard
-    if (session && pathname !== "/onboarding") {
-      const redirectTo = hasProfile ? "/dashboard" : "/onboarding";
-      return NextResponse.redirect(new URL(redirectTo, req.url));
+    // Nếu vào / thì redirect về dashboard
+    if (session && pathname === "/") {
+      return NextResponse.redirect(new URL("/dashboard", req.url));
     }
+    // /login, /register, /onboarding luôn cho vào (không redirect)
     return NextResponse.next();
   }
 

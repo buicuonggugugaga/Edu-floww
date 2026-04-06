@@ -11,6 +11,7 @@ interface MainLayoutProps {
   onLogout?: () => void;
   showFooter?: boolean;
   fullWidth?: boolean;
+  isAuthenticated?: boolean;
 }
 
 export default function MainLayout({ 
@@ -20,10 +21,11 @@ export default function MainLayout({
   onLogout,
   showFooter = true,
   fullWidth = false,
+  isAuthenticated = false,
 }: MainLayoutProps) {
   return (
     <div style={styles.wrapper}>
-      <Header userName={userName} userGrade={userGrade} onLogout={onLogout} />
+      <Header userName={userName} userGrade={userGrade} onLogout={onLogout} isAuthenticated={isAuthenticated} />
       <main style={fullWidth ? styles.mainFull : styles.main}>
         {children}
       </main>

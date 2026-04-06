@@ -3,11 +3,13 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-export default function HomePage() {
+export default function RegisterPage() {
   const router = useRouter();
 
   useEffect(() => {
-    router.replace("/dashboard");
+    // Firebase Auth handles both login and register on the same page
+    // Redirect to login page with register mode
+    router.replace("/login?mode=register");
   }, [router]);
 
   return (
@@ -30,7 +32,7 @@ export default function HomePage() {
           margin: "0 auto 16px",
         }} />
         <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-        <p style={{ color: "#64748b", fontSize: 14 }}>Đang tải...</p>
+        <p style={{ color: "#64748b", fontSize: 14 }}>Đang chuyển hướng...</p>
       </div>
     </div>
   );
