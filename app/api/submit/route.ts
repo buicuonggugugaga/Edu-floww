@@ -128,11 +128,11 @@ export async function POST(req: NextRequest) {
       console.warn("[/api/submit] AI analyze failed:", aiErr?.error?.code);
       // Tự phân tích không cần AI
       const wrongTopics = [
-        ...new Set(graded.filter((a) => !a.isCorrect).map((a) => a.topic)),
-      ];
+        ...new Set(graded.filter((a) => !a.isCorrect).map((a) => a.topic as string)),
+      ] as string[];
       const rightTopics = [
-        ...new Set(graded.filter((a) => a.isCorrect).map((a) => a.topic)),
-      ];
+        ...new Set(graded.filter((a) => a.isCorrect).map((a) => a.topic as string)),
+      ] as string[];
       analysis = {
         weakTopics: wrongTopics,
         strongTopics: rightTopics,
