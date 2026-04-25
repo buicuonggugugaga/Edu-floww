@@ -296,10 +296,12 @@ export default function SettingsPage() {
             </div>
             <div style={styles.statItem}>
               <span style={styles.statValue}>
-                {profile?.examResults?.length 
-                  ? (profile.examResults.reduce((s: number, r: any) => s + (r.score / r.maxScore) * 10, 0) / profile.examResults.length).toFixed(1)
-                  : "—"
-                }/10
+                {(() => {
+                  const validResults = (profile?.examResults || []).filter((r: any) => r.maxScore > 0 && r.score != null);
+                  return validResults.length > 0 
+                    ? (validResults.reduce((s: number, r: any) => s + (r.score / r.maxScore) * 10, 0) / validResults.length).toFixed(1)
+                    : "—";
+                })()}/10
               </span>
               <span style={styles.statLabel}>Điểm TB</span>
             </div>
@@ -329,11 +331,10 @@ export default function SettingsPage() {
 const styles: Record<string, React.CSSProperties> = {
   container: {
     minHeight: "100vh",
-    background: "linear-gradient(180deg, #f0f9ff 0%, #e0f2fe 50%, #f8fafc 100%)",
-    padding: "24px 20px",
+    background: "linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%)",
+    backgroundAttachment: "fixed",
+    padding: "24px 24px 60px",
     fontFamily: "'Roboto', sans-serif",
-    maxWidth: 640,
-    margin: "0 auto",
   },
   loading: {
     minHeight: "100vh",
@@ -342,14 +343,14 @@ const styles: Record<string, React.CSSProperties> = {
     alignItems: "center",
     justifyContent: "center",
     gap: 16,
-    background: "#f8fafc",
+    background: "linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%)",
   },
   spinner: {
     width: 48,
     height: 48,
     borderRadius: "50%",
-    border: "3px solid #e2e8f0",
-    borderTop: "3px solid #0891b2",
+    border: "3px solid rgba(255,255,255,0.2)",
+    borderTop: "3px solid #667eea",
     animation: "spin 1s linear infinite",
   },
   header: {
@@ -359,15 +360,18 @@ const styles: Record<string, React.CSSProperties> = {
     background: "none",
     border: "none",
     fontSize: 14,
-    color: "#0891b2",
+    color: "#a5b4fc",
     cursor: "pointer",
     padding: 0,
     marginBottom: 12,
+    display: "flex",
+    alignItems: "center",
+    gap: 4,
   },
   title: {
     fontSize: 28,
     fontWeight: 800,
-    color: "#0f172a",
+    color: "#fff",
     margin: 0,
   },
   message: {
@@ -376,6 +380,8 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: 14,
     fontWeight: 500,
     marginBottom: 20,
+    background: "rgba(255,255,255,0.08)",
+    border: "1px solid rgba(255,255,255,0.1)",
   },
   form: {
     display: "flex",
@@ -383,16 +389,17 @@ const styles: Record<string, React.CSSProperties> = {
     gap: 24,
   },
   section: {
-    background: "#fff",
+    background: "rgba(255,255,255,0.08)",
+    backdropFilter: "blur(10px)",
     borderRadius: 20,
     padding: 24,
-    boxShadow: "0 4px 12px rgba(0,0,0,0.06)",
-    border: "1px solid #f1f5f9",
+    boxShadow: "0 4px 20px rgba(0,0,0,0.3)",
+    border: "1px solid rgba(255,255,255,0.1)",
   },
   sectionTitle: {
     fontSize: 16,
     fontWeight: 700,
-    color: "#0f172a",
+    color: "#fff",
     margin: "0 0 20px",
   },
   field: {
@@ -402,23 +409,23 @@ const styles: Record<string, React.CSSProperties> = {
     display: "block",
     fontSize: 13,
     fontWeight: 600,
-    color: "#374151",
+    color: "rgba(255,255,255,0.8)",
     marginBottom: 8,
   },
   input: {
     width: "100%",
     padding: "12px 16px",
-    border: "1.5px solid #e0f2fe",
+    border: "1.5px solid rgba(255,255,255,0.1)",
     borderRadius: 12,
     fontSize: 15,
-    color: "#0f172a",
-    background: "#fff",
+    color: "#fff",
+    background: "rgba(255,255,255,0.05)",
     outline: "none",
     boxSizing: "border-box",
   },
   hint: {
     fontSize: 12,
-    color: "#94a3b8",
+    color: "rgba(255,255,255,0.5)",
     marginTop: 8,
     lineHeight: 1.5,
   },
@@ -436,11 +443,11 @@ const styles: Record<string, React.CSSProperties> = {
   radio: {
     width: 18,
     height: 18,
-    accentColor: "#0891b2",
+    accentColor: "#667eea",
   },
   radioText: {
     fontSize: 14,
-    color: "#374151",
+    color: "rgba(255,255,255,0.8)",
   },
   scoreSelector: {
     display: "flex",
@@ -467,27 +474,32 @@ const styles: Record<string, React.CSSProperties> = {
   statItem: {
     textAlign: "center",
     padding: "16px 8px",
-    background: "linear-gradient(135deg, #f0f9ff, #e0f2fe)",
+    background: "rgba(255,255,255,0.08)",
+    backdropFilter: "blur(10px)",
     borderRadius: 14,
+    border: "1px solid rgba(255,255,255,0.1)",
   },
   statValue: {
     display: "block",
     fontSize: 26,
     fontWeight: 800,
-    color: "#0891b2",
+    color: "#a5b4fc",
     marginBottom: 4,
   },
   statLabel: {
     fontSize: 12,
-    color: "#64748b",
+    color: "rgba(255,255,255,0.6)",
   },
   submitBtn: {
     padding: "16px 24px",
-    background: "linear-gradient(135deg, #0891b2, #06b6d4)",
+    background: "linear-gradient(135deg, #667eea, #764ba2)",
     color: "#fff",
     border: "none",
     borderRadius: 14,
     fontSize: 16,
     fontWeight: 600,
+    boxShadow: "0 4px 15px rgba(102, 126, 234, 0.4)",
+    cursor: "pointer",
+    transition: "all 0.2s ease",
   },
 };

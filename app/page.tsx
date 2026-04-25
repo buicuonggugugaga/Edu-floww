@@ -16,7 +16,7 @@ export default function HomePage() {
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
-      background: "#f8fafc",
+      background: "linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)",
       fontFamily: "'Roboto', sans-serif",
     }}>
       <div style={{ textAlign: "center" }}>
@@ -24,13 +24,13 @@ export default function HomePage() {
           width: 48,
           height: 48,
           borderRadius: "50%",
-          border: "3px solid #e2e8f0",
-          borderTop: "3px solid #3b82f6",
+          border: "3px solid rgba(255, 255, 255, 0.2)",
+          borderTop: "3px solid #667eea",
           animation: "spin 1s linear infinite",
           margin: "0 auto 16px",
         }} />
         <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-        <p style={{ color: "#64748b", fontSize: 14 }}>Đang tải...</p>
+        <p style={{ color: "rgba(255, 255, 255, 0.6)", fontSize: 14 }}>Đang tải...</p>
       </div>
     </div>
   );

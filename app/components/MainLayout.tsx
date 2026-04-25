@@ -39,15 +39,16 @@ const styles: Record<string, React.CSSProperties> = {
     minHeight: "100vh",
     display: "flex",
     flexDirection: "column" as const,
+    background: "linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)",
+    backgroundAttachment: "fixed",
   },
   mainFull: {
     flex: 1,
+    width: "100%",
   },
   main: {
     flex: 1,
-    maxWidth: 1200,
     width: "100%",
-    margin: "0 auto",
     padding: "32px 24px",
   },
 };

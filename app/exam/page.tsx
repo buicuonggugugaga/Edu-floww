@@ -19,15 +19,15 @@ interface SubjectConfig {
 }
 
 const SUBJECTS: SubjectConfig[] = [
-  { id: "math", name: "Toán", icon: <Icons.Math />, color: "#3b82f6", bgColor: "#eff6ff", questions: 60, timeMinutes: 90, type: "mcq", group: "all" },
-  { id: "literature", name: "Ngữ Văn", icon: <Icons.Literature />, color: "#f59e0b", bgColor: "#fffbeb", questions: 50, timeMinutes: 90, type: "mcq", group: "all" },
-  { id: "english", name: "Tiếng Anh", icon: <Icons.English />, color: "#10b981", bgColor: "#ecfdf5", questions: 50, timeMinutes: 60, type: "mcq", group: "all" },
-  { id: "physics", name: "Vật Lý", icon: <Icons.Physics />, color: "#8b5cf6", bgColor: "#f5f3ff", questions: 40, timeMinutes: 75, type: "mcq", group: "science" },
-  { id: "chemistry", name: "Hóa Học", icon: <Icons.Chemistry />, color: "#ef4444", bgColor: "#fef2f2", questions: 40, timeMinutes: 75, type: "mcq", group: "science" },
-  { id: "history", name: "Lịch Sử", icon: <Icons.History />, color: "#6366f1", bgColor: "#eef2ff", questions: 40, timeMinutes: 75, type: "mcq", group: "social" },
-  { id: "geography", name: "Địa Lý", icon: <Icons.Geography />, color: "#14b8a6", bgColor: "#f0fdfa", questions: 40, timeMinutes: 75, type: "mcq", group: "social" },
-  { id: "civic", name: "GDCD", icon: <Icons.Civic />, color: "#f97316", bgColor: "#fff7ed", questions: 40, timeMinutes: 75, type: "mcq", group: "social" },
-  { id: "biology", name: "Sinh", icon: <Icons.Biology />, color: "#22c55e", bgColor: "#f0fdf4", questions: 0, timeMinutes: 60, type: "mcq", group: "science" },
+  { id: "math", name: "Toán", icon: <Icons.Math />, color: "#667eea", bgColor: "rgba(102, 126, 234, 0.2)", questions: 60, timeMinutes: 90, type: "mcq", group: "all" },
+  { id: "literature", name: "Ngữ Văn", icon: <Icons.Literature />, color: "#f59e0b", bgColor: "rgba(245, 158, 11, 0.2)", questions: 50, timeMinutes: 90, type: "mcq", group: "all" },
+  { id: "english", name: "Tiếng Anh", icon: <Icons.English />, color: "#10b981", bgColor: "rgba(16, 185, 129, 0.2)", questions: 50, timeMinutes: 60, type: "mcq", group: "all" },
+  { id: "physics", name: "Vật Lý", icon: <Icons.Physics />, color: "#8b5cf6", bgColor: "rgba(139, 92, 246, 0.2)", questions: 40, timeMinutes: 75, type: "mcq", group: "science" },
+  { id: "chemistry", name: "Hóa Học", icon: <Icons.Chemistry />, color: "#ef4444", bgColor: "rgba(239, 68, 68, 0.2)", questions: 40, timeMinutes: 75, type: "mcq", group: "science" },
+  { id: "history", name: "Lịch Sử", icon: <Icons.History />, color: "#6366f1", bgColor: "rgba(99, 102, 241, 0.2)", questions: 40, timeMinutes: 75, type: "mcq", group: "social" },
+  { id: "geography", name: "Địa Lý", icon: <Icons.Geography />, color: "#14b8a6", bgColor: "rgba(20, 184, 166, 0.2)", questions: 40, timeMinutes: 75, type: "mcq", group: "social" },
+  { id: "civic", name: "GDCD", icon: <Icons.Civic />, color: "#f97316", bgColor: "rgba(249, 115, 22, 0.2)", questions: 40, timeMinutes: 75, type: "mcq", group: "social" },
+  { id: "biology", name: "Sinh", icon: <Icons.Biology />, color: "#22c55e", bgColor: "rgba(34, 197, 94, 0.2)", questions: 0, timeMinutes: 60, type: "mcq", group: "science" },
 ];
 
 type ExamState = "subjects" | "intro" | "exam" | "result" | "overview";
@@ -110,6 +110,10 @@ export default function ExamPage() {
           setProfile(profileData.profile);
           studentGrade = profileData.profile?.grade || 12;
           studentTrack = profileData.profile?.track || "science";
+          // Load existing exam results from profile
+          if (profileData.profile?.examResults) {
+            setResults(profileData.profile.examResults);
+          }
         }
         
         const configRes = await fetch("/api/exam/config", { credentials: "include" });
@@ -296,9 +300,9 @@ export default function ExamPage() {
                 key={f.key}
                 style={{
                   ...styles.filterTab,
-                  background: subjectFilter === f.key ? "#3b82f6" : "#fff",
-                  color: subjectFilter === f.key ? "#fff" : "#64748b",
-                  borderColor: subjectFilter === f.key ? "#3b82f6" : "#e2e8f0",
+                  background: subjectFilter === f.key ? "linear-gradient(135deg, #667eea, #764ba2)" : "rgba(255,255,255,0.05)",
+                  color: subjectFilter === f.key ? "#fff" : "rgba(255,255,255,0.6)",
+                  borderColor: subjectFilter === f.key ? "transparent" : "rgba(255,255,255,0.1)",
                 }}
                 onClick={() => setSubjectFilter(f.key)}
               >
@@ -347,15 +351,17 @@ export default function ExamPage() {
                 key={s.id} 
                 style={{ ...styles.card }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = "translateY(-4px)";
-                  e.currentTarget.style.boxShadow = "0 12px 32px rgba(0,0,0,0.1)";
+                  e.currentTarget.style.transform = "translateY(-8px)";
+                  e.currentTarget.style.boxShadow = "0 20px 40px rgba(0,0,0,0.4)";
+                  e.currentTarget.style.borderColor = "rgba(167, 139, 250, 0.3)";
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.transform = "translateY(0)";
-                  e.currentTarget.style.boxShadow = "0 4px 20px rgba(0,0,0,0.06)";
+                  e.currentTarget.style.boxShadow = "0 8px 32px rgba(0,0,0,0.3)";
+                  e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)";
                 }}
               >
-                <div style={{ ...styles.cardIcon, background: s.bgColor, color: s.color }}>
+                <div style={{ ...styles.cardIcon, background: s.bgColor, color: s.color, boxShadow: `0 4px 15px ${s.color}40` }}>
                   {done ? <Icons.Check /> : s.icon}
                 </div>
                 <h3 style={styles.cardTitle}>{s.name}</h3>
@@ -365,7 +371,7 @@ export default function ExamPage() {
                     <span style={{ color: (r.score / r.maxScore) * 10 >= 5 ? "#10b981" : "#ef4444", fontSize: 22, fontWeight: 700 }}>
                       {((r.score / r.maxScore) * 10).toFixed(1)}
                     </span>
-                    <span style={{ color: "#94a3b8", fontSize: 14 }}>/10</span>
+                    <span style={{ color: "rgba(255,255,255,0.5)", fontSize: 14 }}>/10</span>
                   </div>
                 )}
                 <button 
@@ -374,10 +380,14 @@ export default function ExamPage() {
                   onMouseEnter={(e) => {
                     e.currentTarget.style.background = s.color;
                     e.currentTarget.style.color = "#fff";
+                    e.currentTarget.style.transform = "translateY(-2px)";
+                    e.currentTarget.style.boxShadow = `0 8px 20px ${s.color}50`;
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.background = "transparent";
                     e.currentTarget.style.color = s.color;
+                    e.currentTarget.style.transform = "translateY(0)";
+                    e.currentTarget.style.boxShadow = "none";
                   }}
                 >
                   {done ? "Làm lại" : "Bắt đầu"}
@@ -455,9 +465,18 @@ export default function ExamPage() {
                   {q.choices.map((c, i) => {
                     const sel = answers[q.id] === c;
                     return (
-                      <button key={i} style={{ ...styles.choice, borderColor: sel ? currentSubject.color : "#e2e8f0", background: sel ? currentSubject.bgColor : "#fff" }} onClick={() => setAnswers(p => ({ ...p, [q.id]: c }))}>
-                        <span style={{ ...styles.choiceLetter, background: sel ? currentSubject.color : "#f1f5f9", color: sel ? "#fff" : "#64748b" }}>{String.fromCharCode(65 + i)}</span>
-                        <span style={{ color: sel ? currentSubject.color : "#374151" }}>{c}</span>
+                      <button key={i} style={{ ...styles.choice, borderColor: sel ? currentSubject.color : "rgba(255,255,255,0.1)", background: sel ? currentSubject.bgColor : "rgba(255,255,255,0.05)" }} onClick={() => setAnswers(p => ({ ...p, [q.id]: c }))}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.background = sel ? currentSubject.bgColor : "rgba(255,255,255,0.1)";
+                          e.currentTarget.style.transform = "translateY(-2px)";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.background = sel ? currentSubject.bgColor : "rgba(255,255,255,0.05)";
+                          e.currentTarget.style.transform = "translateY(0)";
+                        }}
+                      >
+                        <span style={{ ...styles.choiceLetter, background: sel ? currentSubject.color : "rgba(255,255,255,0.1)", color: sel ? "#fff" : "rgba(255,255,255,0.6)" }}>{String.fromCharCode(65 + i)}</span>
+                        <span style={{ color: sel ? currentSubject.color : "rgba(255,255,255,0.8)" }}>{c}</span>
                       </button>
                     );
                   })}
@@ -597,65 +616,65 @@ export default function ExamPage() {
 }
 
 const styles: Record<string, React.CSSProperties> = {
-  container: { minHeight: "100vh", background: "#F4F7F6", padding: "24px 20px", fontFamily: "'Roboto', sans-serif" },
-  loading: { minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 16, background: "#F4F7F6" },
-  spinner: { width: 48, height: 48, borderRadius: "50%", border: "3px solid #e2e8f0", borderTop: "3px solid #0891b2", animation: "spin 1s linear infinite" },
+  container: { minHeight: "100vh", background: "linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)", padding: "24px 24px 60px", fontFamily: "'Roboto', sans-serif" },
+  loading: { minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 16, background: "linear-gradient(135deg, #1a1a2e, #16213e)" },
+  spinner: { width: 48, height: 48, borderRadius: "50%", border: "3px solid rgba(255,255,255,0.2)", borderTop: "3px solid #667eea", animation: "spin 1s linear infinite" },
   header: { marginBottom: 20 },
   titleRow: { display: "flex", alignItems: "center", gap: 12, marginBottom: 4 },
-  title: { fontSize: 26, fontWeight: 800, color: "#0f172a", margin: 0 },
-  subtitle: { fontSize: 14, color: "#64748b", margin: 0 },
+  title: { fontSize: 26, fontWeight: 800, color: "#fff", margin: 0 },
+  subtitle: { fontSize: 14, color: "rgba(255,255,255,0.6)", margin: 0 },
   filterContainer: { marginBottom: 24 },
   filterTabs: { display: "flex", gap: 8, flexWrap: "wrap" },
-  filterTab: { padding: "10px 18px", borderRadius: 24, border: "1.5px solid", fontSize: 13, fontWeight: 600, cursor: "pointer", transition: "all 0.2s ease", display: "flex", alignItems: "center", gap: 6 },
-  emptyCard: { background: "#fff", borderRadius: 20, padding: 48, textAlign: "center", marginBottom: 24, boxShadow: "0 4px 16px rgba(0,0,0,0.06)", border: "1px solid rgba(0,0,0,0.04)" },
-  progressCard: { background: "#fff", borderRadius: 16, padding: 20, marginBottom: 32, boxShadow: "0 4px 16px rgba(0,0,0,0.06)", border: "1px solid rgba(0,0,0,0.04)", display: "flex", alignItems: "center", gap: 20 },
-  progressText: { fontSize: 14, color: "#64748b", marginBottom: 10, fontWeight: 500 },
-  progressTrack: { height: 12, background: "#e0f2fe", borderRadius: 99, overflow: "hidden", flex: 1, position: "relative" as const },
-  progressFill: { height: "100%", background: "linear-gradient(90deg, #06b6d4, #0891b2, #3b82f6)", borderRadius: 99, transition: "width 0.4s cubic-bezier(0.4, 0, 0.2, 1)" },
-  progressPercent: { fontSize: 16, fontWeight: 700, color: "#0891b2", minWidth: 50, textAlign: "right" as const },
-  completeCard: { background: "linear-gradient(135deg, #0891b2, #06b6d4)", borderRadius: 20, padding: 28, marginBottom: 24, textAlign: "center", color: "#fff", boxShadow: "0 8px 24px rgba(8, 145, 178, 0.3)" },
-  overviewBtn: { background: "#fff", color: "#0891b2", border: "none", borderRadius: 12, padding: "12px 24px", fontSize: 14, fontWeight: 600, cursor: "pointer", marginTop: 12, transition: "all 0.2s ease" },
+  filterTab: { padding: "10px 18px", borderRadius: 24, border: "1.5px solid rgba(255,255,255,0.1)", fontSize: 13, fontWeight: 600, cursor: "pointer", transition: "all 0.2s ease", display: "flex", alignItems: "center", gap: 6, background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.7)" },
+  emptyCard: { background: "rgba(255,255,255,0.1)", backdropFilter: "blur(10px)", borderRadius: 20, padding: 48, textAlign: "center", marginBottom: 24, boxShadow: "0 8px 32px rgba(0,0,0,0.3)", border: "1px solid rgba(255,255,255,0.1)" },
+  progressCard: { background: "rgba(255,255,255,0.1)", backdropFilter: "blur(10px)", borderRadius: 16, padding: 20, marginBottom: 32, boxShadow: "0 8px 32px rgba(0,0,0,0.3)", border: "1px solid rgba(255,255,255,0.1)", display: "flex", alignItems: "center", gap: 20 },
+  progressText: { fontSize: 14, color: "rgba(255,255,255,0.7)", marginBottom: 10, fontWeight: 500 },
+  progressTrack: { height: 12, background: "rgba(255,255,255,0.1)", borderRadius: 99, overflow: "hidden", flex: 1, position: "relative" as const },
+  progressFill: { height: "100%", background: "linear-gradient(90deg, #667eea, #764ba2, #f093fb)", borderRadius: 99, transition: "width 0.4s cubic-bezier(0.4, 0, 0.2, 1)" },
+  progressPercent: { fontSize: 16, fontWeight: 700, color: "#a78bfa", minWidth: 50, textAlign: "right" as const },
+  completeCard: { background: "linear-gradient(135deg, #667eea, #764ba2)", borderRadius: 20, padding: 28, marginBottom: 24, textAlign: "center", color: "#fff", boxShadow: "0 8px 32px rgba(102, 126, 234, 0.4)" },
+  overviewBtn: { background: "#fff", color: "#667eea", border: "none", borderRadius: 12, padding: "12px 24px", fontSize: 14, fontWeight: 600, cursor: "pointer", marginTop: 12, transition: "all 0.2s ease" },
   grid: { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 20 },
-  card: { background: "#fff", borderRadius: 18, padding: 24, textAlign: "center", border: "1px solid rgba(0,0,0,0.04)", boxShadow: "0 4px 20px rgba(0,0,0,0.06)", transition: "all 0.25s ease", position: "relative" as const, overflow: "hidden" as const },
+  card: { background: "rgba(255,255,255,0.08)", backdropFilter: "blur(10px)", borderRadius: 18, padding: 24, textAlign: "center", border: "1px solid rgba(255,255,255,0.1)", boxShadow: "0 8px 32px rgba(0,0,0,0.3)", transition: "all 0.3s ease", position: "relative" as const, overflow: "hidden" as const },
   cardIcon: { width: 56, height: 56, borderRadius: 16, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px" },
-  cardTitle: { fontSize: 16, fontWeight: 700, color: "#0f172a", margin: "0 0 6px" },
-  cardInfo: { fontSize: 13, color: "#94a3b8", margin: "0 0 16px", opacity: 0.8 },
+  cardTitle: { fontSize: 16, fontWeight: 700, color: "#fff", margin: "0 0 6px" },
+  cardInfo: { fontSize: 13, color: "rgba(255,255,255,0.5)", margin: "0 0 16px", opacity: 0.8 },
   cardScore: { marginBottom: 16 },
-  cardBtn: { width: "100%", padding: "12px 16px", border: "1.5px solid", borderRadius: 12, background: "transparent", fontSize: 13, fontWeight: 600, cursor: "pointer", transition: "all 0.2s ease" },
-  error: { background: "#fef2f2", borderRadius: 12, padding: "14px 18px", color: "#dc2626", fontSize: 14, marginTop: 16, textAlign: "center", border: "1px solid #fecaca" },
-  introCard: { background: "#fff", borderRadius: 24, padding: 40, textAlign: "center", maxWidth: 500, margin: "60px auto", boxShadow: "0 12px 40px rgba(0,0,0,0.1)", border: "1px solid rgba(0,0,0,0.04)" },
+  cardBtn: { width: "100%", padding: "12px 16px", border: "1.5px solid rgba(167, 139, 250, 0.5)", borderRadius: 12, background: "transparent", color: "#a78bfa", fontSize: 13, fontWeight: 600, cursor: "pointer", transition: "all 0.2s ease" },
+  error: { background: "rgba(239, 68, 68, 0.15)", borderRadius: 12, padding: "14px 18px", color: "#fca5a5", fontSize: 14, marginTop: 16, textAlign: "center", border: "1px solid rgba(239, 68, 68, 0.3)" },
+  introCard: { background: "rgba(255,255,255,0.1)", backdropFilter: "blur(20px)", borderRadius: 24, padding: 40, textAlign: "center", maxWidth: 500, margin: "60px auto", boxShadow: "0 20px 60px rgba(0,0,0,0.5)", border: "1px solid rgba(255,255,255,0.15)" },
   introIcon: { width: 88, height: 88, borderRadius: 24, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 44, margin: "0 auto 24px" },
-  introTitle: { fontSize: 24, fontWeight: 800, color: "#0f172a", margin: "0 0 24px" },
+  introTitle: { fontSize: 24, fontWeight: 800, color: "#fff", margin: "0 0 24px" },
   introStats: { display: "flex", justifyContent: "center", gap: 40, marginBottom: 28 },
   introStat: { textAlign: "center" },
-  introStatVal: { display: "block", fontSize: 28, fontWeight: 700, color: "#0891b2" },
-  introStatLabel: { fontSize: 12, color: "#94a3b8" },
-  introWarning: { background: "linear-gradient(135deg, #fef3c7, #fde68a)", borderRadius: 12, padding: "14px 18px", fontSize: 13, color: "#92400e", marginBottom: 24, border: "1px solid #fcd34d" },
+  introStatVal: { display: "block", fontSize: 28, fontWeight: 700, color: "#a78bfa" },
+  introStatLabel: { fontSize: 12, color: "rgba(255,255,255,0.5)" },
+  introWarning: { background: "rgba(245, 158, 11, 0.2)", borderRadius: 12, padding: "14px 18px", fontSize: 13, color: "#fcd34d", marginBottom: 24, border: "1px solid rgba(245, 158, 11, 0.3)" },
   introBtns: { display: "flex", gap: 12, justifyContent: "center" },
-  backBtn: { background: "none", border: "none", color: "#0891b2", fontSize: 14, fontWeight: 500, cursor: "pointer", display: "flex", alignItems: "center", gap: 4, padding: 0 },
-  startBtn: { padding: "14px 28px", border: "none", borderRadius: 12, color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer", transition: "all 0.2s ease", boxShadow: "0 4px 12px rgba(0,0,0,0.15)" },
-  examContainer: { minHeight: "100vh", background: "#F4F7F6", fontFamily: "'Roboto', sans-serif" },
-  examHeader: { background: "rgba(255,255,255,0.95)", backdropFilter: "blur(10px)", padding: "16px 20px", display: "flex", alignItems: "center", gap: 10, borderBottom: "1px solid rgba(0,0,0,0.05)", position: "sticky", top: 0, zIndex: 10 },
-  examTitle: { fontSize: 16, fontWeight: 600, color: "#0f172a", flex: 1 },
-  timer: { fontSize: 18, fontWeight: 700, color: "#0891b2" },
-  examProgress: { background: "#fff", padding: "8px 20px 12px", borderBottom: "1px solid rgba(0,0,0,0.05)" },
-  examProgressTrack: { height: 6, background: "#e0f2fe", borderRadius: 99, overflow: "hidden", marginTop: 6 },
-  examProgressFill: { height: "100%", borderRadius: 99, transition: "width 0.3s", background: "linear-gradient(90deg, #06b6d4, #0891b2, #3b82f6)" },
+  backBtn: { background: "none", border: "none", color: "rgba(255,255,255,0.6)", fontSize: 14, fontWeight: 500, cursor: "pointer", display: "flex", alignItems: "center", gap: 4, padding: 0 },
+  startBtn: { padding: "14px 28px", border: "none", borderRadius: 12, color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer", transition: "all 0.2s ease", boxShadow: "0 4px 15px rgba(102, 126, 234, 0.4)", background: "linear-gradient(135deg, #667eea, #764ba2)" },
+  examContainer: { minHeight: "100vh", background: "linear-gradient(135deg, #1a1a2e, #16213e)", fontFamily: "'Roboto', sans-serif" },
+  examHeader: { background: "rgba(26, 26, 46, 0.95)", backdropFilter: "blur(10px)", padding: "16px 20px", display: "flex", alignItems: "center", gap: 10, borderBottom: "1px solid rgba(255,255,255,0.1)", position: "sticky", top: 0, zIndex: 10 },
+  examTitle: { fontSize: 16, fontWeight: 600, color: "#fff", flex: 1 },
+  timer: { fontSize: 18, fontWeight: 700, color: "#a78bfa" },
+  examProgress: { background: "rgba(26, 26, 46, 0.8)", padding: "8px 20px 12px", borderBottom: "1px solid rgba(255,255,255,0.05)" },
+  examProgressTrack: { height: 6, background: "rgba(255,255,255,0.1)", borderRadius: 99, overflow: "hidden", marginTop: 6 },
+  examProgressFill: { height: "100%", borderRadius: 99, transition: "width 0.3s", background: "linear-gradient(90deg, #667eea, #764ba2, #f093fb)" },
   examBody: { maxWidth: 800, margin: "0 auto", padding: "24px 20px 130px" },
-  questionCard: { background: "#fff", borderRadius: 20, padding: 28, boxShadow: "0 8px 24px rgba(0,0,0,0.08)", marginBottom: 20, border: "1px solid rgba(0,0,0,0.04)" },
+  questionCard: { background: "rgba(255,255,255,0.08)", backdropFilter: "blur(10px)", borderRadius: 20, padding: 28, boxShadow: "0 8px 32px rgba(0,0,0,0.3)", marginBottom: 20, border: "1px solid rgba(255,255,255,0.1)" },
   qHeader: { display: "flex", alignItems: "center", gap: 12, marginBottom: 16 },
   qBadge: { fontSize: 12, fontWeight: 600, padding: "4px 12px", borderRadius: 99 },
-  qPrompt: { fontSize: 16, fontWeight: 500, color: "#0f172a", lineHeight: 1.6, marginBottom: 20 },
+  qPrompt: { fontSize: 16, fontWeight: 500, color: "#fff", lineHeight: 1.6, marginBottom: 20 },
   choices: { display: "flex", flexDirection: "column", gap: 10 },
-  choice: { display: "flex", alignItems: "center", gap: 14, padding: "14px 18px", borderRadius: 14, border: "1.5px solid #e0f2fe", background: "#fff", cursor: "pointer", textAlign: "left", transition: "all 0.15s" },
+  choice: { display: "flex", alignItems: "center", gap: 14, padding: "14px 18px", borderRadius: 14, border: "1.5px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.05)", cursor: "pointer", textAlign: "left", transition: "all 0.2s", color: "#fff" },
   choiceLetter: { width: 32, height: 32, borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 700, flexShrink: 0 },
-  textarea: { width: "100%", minHeight: 150, padding: 14, border: "1.5px solid #e0f2fe", borderRadius: 14, fontSize: 15, fontFamily: "inherit", resize: "vertical" },
+  textarea: { width: "100%", minHeight: 150, padding: 14, border: "1.5px solid rgba(255,255,255,0.1)", borderRadius: 14, fontSize: 15, fontFamily: "inherit", resize: "vertical", background: "rgba(255,255,255,0.05)", color: "#fff" },
   nav: { display: "flex", gap: 12 },
-  navBtn: { flex: 1, padding: 14, borderRadius: 14, border: "1.5px solid #e0f2fe", background: "#fff", color: "#374151", fontSize: 14, fontWeight: 600, cursor: "pointer", transition: "all 0.2s ease" },
+  navBtn: { flex: 1, padding: 14, borderRadius: 14, border: "1.5px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.05)", color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer", transition: "all 0.2s ease" },
   navigatorHorizontal: { 
-    background: "rgba(255,255,255,0.95)",
+    background: "rgba(26, 26, 46, 0.95)",
     backdropFilter: "blur(10px)",
-    borderTop: "1px solid rgba(0,0,0,0.05)", 
+    borderTop: "1px solid rgba(255,255,255,0.1)", 
     padding: "12px 16px", 
     position: "fixed", 
     bottom: 0, 
@@ -668,13 +687,13 @@ const styles: Record<string, React.CSSProperties> = {
     overflowY: "auto",
     zIndex: 20,
   },
-  resultCard: { background: "#fff", borderRadius: 24, padding: 40, textAlign: "center", maxWidth: 500, margin: "60px auto", boxShadow: "0 12px 40px rgba(0,0,0,0.12)", border: "1px solid rgba(0,0,0,0.04)" },
+  resultCard: { background: "rgba(255,255,255,0.1)", backdropFilter: "blur(20px)", borderRadius: 24, padding: 40, textAlign: "center", maxWidth: 500, margin: "60px auto", boxShadow: "0 20px 60px rgba(0,0,0,0.5)", border: "1px solid rgba(255,255,255,0.15)" },
   resultIcon: { width: 88, height: 88, borderRadius: 24, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 44, margin: "0 auto 20px" },
   resultScore: { margin: "16px 0" },
-  continueBtn: { padding: "14px 32px", border: "none", borderRadius: 12, background: "linear-gradient(135deg, #0891b2, #06b6d4)", color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer", boxShadow: "0 4px 12px rgba(8, 145, 178, 0.3)", transition: "all 0.2s ease" },
+  continueBtn: { padding: "14px 32px", border: "none", borderRadius: 12, background: "linear-gradient(135deg, #667eea, #764ba2)", color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer", boxShadow: "0 4px 15px rgba(102, 126, 234, 0.4)", transition: "all 0.2s ease" },
   overviewHeader: { textAlign: "center", marginBottom: 24 },
-  avgCard: { textAlign: "center", background: "linear-gradient(135deg, #0891b2, #06b6d4)", borderRadius: 24, padding: 32, marginBottom: 24, color: "#fff", boxShadow: "0 8px 24px rgba(8, 145, 178, 0.3)" },
+  avgCard: { textAlign: "center", background: "linear-gradient(135deg, #667eea, #764ba2)", borderRadius: 24, padding: 32, marginBottom: 24, color: "#fff", boxShadow: "0 8px 32px rgba(102, 126, 234, 0.4)" },
   resultGrid: { display: "flex", flexDirection: "column", gap: 10, marginBottom: 24 },
-  resultItem: { background: "#fff", borderRadius: 14, padding: 16, display: "flex", alignItems: "center", gap: 12, boxShadow: "0 4px 12px rgba(0,0,0,0.06)", border: "1px solid rgba(0,0,0,0.04)" },
-  analysisCard: { background: "#fff", borderRadius: 20, padding: 24, boxShadow: "0 4px 12px rgba(0,0,0,0.06)", border: "1px solid #f1f5f9" },
+  resultItem: { background: "rgba(255,255,255,0.08)", borderRadius: 14, padding: 16, display: "flex", alignItems: "center", gap: 12, boxShadow: "0 4px 15px rgba(0,0,0,0.2)", border: "1px solid rgba(255,255,255,0.1)" },
+  analysisCard: { background: "rgba(255,255,255,0.08)", borderRadius: 20, padding: 24, boxShadow: "0 4px 20px rgba(0,0,0,0.2)", border: "1px solid rgba(255,255,255,0.1)" },
 };

@@ -89,14 +89,14 @@ export default function Header({ userName, userGrade, onLogout, isAuthenticated 
               style={styles.navLink}
               onClick={(e) => handleNavClick(e, item.requireAuth)}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = "linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)";
+                e.currentTarget.style.background = "rgba(167, 139, 250, 0.2)";
                 e.currentTarget.style.color = "#fff";
                 e.currentTarget.querySelector('.navIcon')?.setAttribute('style', 'color: #fff');
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.background = "transparent";
-                e.currentTarget.style.color = "#64748b";
-                e.currentTarget.querySelector('.navIcon')?.setAttribute('style', 'display: flex; align-items: center; justify-content: center; color: #64748b');
+                e.currentTarget.style.color = "rgba(255, 255, 255, 0.7)";
+                e.currentTarget.querySelector('.navIcon')?.setAttribute('style', 'display: flex; align-items: center; justify-content: center; color: rgba(255, 255, 255, 0.6)');
               }}
             >
               <span className="navIcon" style={styles.navIcon}>{item.icon}</span>
@@ -224,13 +224,14 @@ const styles: Record<string, React.CSSProperties> = {
     left: 0,
     right: 0,
     zIndex: 100,
-    background: "rgba(255, 255, 255, 0.95)",
-    backdropFilter: "blur(10px)",
-    borderBottom: "1px solid rgba(0, 0, 0, 0.05)",
+    background: "rgba(26, 26, 46, 0.95)",
+    backdropFilter: "blur(15px)",
+    WebkitBackdropFilter: "blur(15px)",
+    borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
     transition: "all 0.3s ease",
   },
   headerScrolled: {
-    boxShadow: "0 4px 20px rgba(0, 0, 0, 0.08)",
+    boxShadow: "0 4px 30px rgba(0, 0, 0, 0.3)",
   },
   container: {
     maxWidth: 1200,
@@ -248,11 +249,12 @@ const styles: Record<string, React.CSSProperties> = {
     textDecoration: "none",
   },
   logoText: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: 800,
-    background: "linear-gradient(135deg, #0891b2, #06b6d4)",
+    background: "linear-gradient(135deg, #667eea, #764ba2, #f093fb)",
     WebkitBackgroundClip: "text",
     WebkitTextFillColor: "transparent",
+    letterSpacing: "-0.5px",
   },
   nav: {
     display: "flex",
@@ -266,7 +268,7 @@ const styles: Record<string, React.CSSProperties> = {
     padding: "10px 16px",
     borderRadius: 12,
     textDecoration: "none",
-    color: "#64748b",
+    color: "rgba(255, 255, 255, 0.7)",
     fontSize: 14,
     fontWeight: 600,
     transition: "all 0.25s ease",
@@ -276,7 +278,7 @@ const styles: Record<string, React.CSSProperties> = {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    color: "#64748b",
+    color: "rgba(255, 255, 255, 0.6)",
     transition: "color 0.25s ease",
   },
   actions: {
@@ -288,19 +290,21 @@ const styles: Record<string, React.CSSProperties> = {
     display: "flex",
     alignItems: "center",
     gap: 10,
-    padding: "8px 12px",
-    background: "#f8fafc",
-    borderRadius: 10,
+    padding: "8px 14px",
+    background: "rgba(255, 255, 255, 0.1)",
+    borderRadius: 12,
+    border: "1px solid rgba(255, 255, 255, 0.1)",
   },
   userAvatar: {
     width: 36,
     height: 36,
     borderRadius: "50%",
-    background: "linear-gradient(135deg, #0891b2, #06b6d4)",
+    background: "linear-gradient(135deg, #667eea, #764ba2)",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     color: "#fff",
+    boxShadow: "0 4px 12px rgba(102, 126, 234, 0.4)",
   },
   userDetails: {
     display: "flex",
@@ -309,23 +313,23 @@ const styles: Record<string, React.CSSProperties> = {
   userName: {
     fontSize: 14,
     fontWeight: 600,
-    color: "#0f172a",
+    color: "#fff",
   },
   userGrade: {
     fontSize: 12,
-    color: "#64748b",
+    color: "rgba(255, 255, 255, 0.5)",
   },
   iconBtn: {
     width: 40,
     height: 40,
     borderRadius: 12,
-    background: "#f8fafc",
-    border: "none",
+    background: "rgba(255, 255, 255, 0.1)",
+    border: "1px solid rgba(255, 255, 255, 0.1)",
     cursor: "pointer",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    color: "#64748b",
+    color: "rgba(255, 255, 255, 0.7)",
     transition: "all 0.25s ease",
     textDecoration: "none",
   },
@@ -334,21 +338,22 @@ const styles: Record<string, React.CSSProperties> = {
     width: 40,
     height: 40,
     borderRadius: 10,
-    background: "#f8fafc",
+    background: "rgba(255, 255, 255, 0.1)",
     border: "none",
     cursor: "pointer",
     alignItems: "center",
     justifyContent: "center",
-    color: "#64748b",
+    color: "#fff",
   },
   mobileMenu: {
     position: "absolute",
     top: 70,
     left: 0,
     right: 0,
-    background: "#fff",
+    background: "rgba(26, 26, 46, 0.98)",
+    backdropFilter: "blur(20px)",
     padding: 16,
-    boxShadow: "0 10px 40px rgba(0, 0, 0, 0.1)",
+    boxShadow: "0 20px 40px rgba(0, 0, 0, 0.4)",
     display: "flex",
     flexDirection: "column",
     gap: 4,
@@ -360,7 +365,7 @@ const styles: Record<string, React.CSSProperties> = {
     padding: "12px 16px",
     borderRadius: 10,
     textDecoration: "none",
-    color: "#475569",
+    color: "rgba(255, 255, 255, 0.8)",
     fontSize: 14,
     fontWeight: 500,
     background: "none",
@@ -370,27 +375,28 @@ const styles: Record<string, React.CSSProperties> = {
     cursor: "pointer",
   },
   loginBtn: {
-    padding: "10px 20px",
-    borderRadius: 10,
-    border: "2px solid #0891b2",
+    padding: "10px 22px",
+    borderRadius: 12,
+    border: "1px solid rgba(167, 139, 250, 0.5)",
     background: "transparent",
-    color: "#0891b2",
+    color: "#a78bfa",
     fontSize: 14,
     fontWeight: 600,
     cursor: "pointer",
     textDecoration: "none",
-    transition: "all 0.2s ease",
+    transition: "all 0.3s ease",
   },
   registerBtn: {
-    padding: "10px 20px",
-    borderRadius: 10,
+    padding: "10px 22px",
+    borderRadius: 12,
     border: "none",
-    background: "linear-gradient(135deg, #0891b2, #06b6d4)",
+    background: "linear-gradient(135deg, #667eea, #764ba2)",
     color: "#fff",
     fontSize: 14,
     fontWeight: 600,
     cursor: "pointer",
     textDecoration: "none",
-    transition: "all 0.2s ease",
+    transition: "all 0.3s ease",
+    boxShadow: "0 4px 15px rgba(102, 126, 234, 0.4)",
   },
 };

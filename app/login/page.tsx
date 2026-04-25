@@ -195,6 +195,14 @@ function LoginPageContent() {
 
   return (
     <div style={S.page}>
+      {/* Background animated shapes */}
+      <div style={S.backgroundShapes}>
+        <div style={{ ...S.shape, width: 400, height: 400, background: "radial-gradient(circle, rgba(102, 126, 234, 0.3) 0%, transparent 70%)", top: "-10%", left: "-10%", animationDelay: "0s" }} />
+        <div style={{ ...S.shape, width: 300, height: 300, background: "radial-gradient(circle, rgba(118, 75, 162, 0.3) 0%, transparent 70%)", top: "60%", right: "-5%", animationDelay: "-5s" }} />
+        <div style={{ ...S.shape, width: 200, height: 200, background: "radial-gradient(circle, rgba(240, 153, 251, 0.2) 0%, transparent 70%)", bottom: "10%", left: "20%", animationDelay: "-10s" }} />
+        <div style={{ ...S.shape, width: 150, height: 150, background: "radial-gradient(circle, rgba(102, 126, 234, 0.2) 0%, transparent 70%)", top: "20%", right: "30%", animationDelay: "-15s" }} />
+      </div>
+      <style>{keyframes}</style>
       <link
         href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
         rel="stylesheet"
@@ -214,7 +222,18 @@ function LoginPageContent() {
         {mode === "choose" && (
           <>
             <div style={S.modeGrid}>
-              <button style={S.modeCard} onClick={() => switchMode("login")}>
+              <button style={S.modeCard} onClick={() => switchMode("login")}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = "rgba(102, 126, 234, 0.15)";
+                  e.currentTarget.style.borderColor = "rgba(102, 126, 234, 0.4)";
+                  e.currentTarget.style.transform = "translateY(-4px)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = "rgba(255, 255, 255, 0.05)";
+                  e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.1)";
+                  e.currentTarget.style.transform = "translateY(0)";
+                }}
+              >
                 <span style={{ fontSize: 32, display: "flex" }}><Icons.Bolt /></span>
                 <span style={S.modeTitle}>Đăng nhập</span>
                 <span style={S.modeDesc}>Tôi đã có tài khoản</span>
@@ -222,10 +241,20 @@ function LoginPageContent() {
               <button
                 style={{
                   ...S.modeCard,
-                  border: "1.5px solid #bbf7d0",
-                  background: "#f0fdf4",
+                  border: "1px solid rgba(240, 153, 251, 0.3)",
+                  background: "rgba(240, 153, 251, 0.1)",
                 }}
                 onClick={() => switchMode("register")}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = "rgba(240, 153, 251, 0.25)";
+                  e.currentTarget.style.borderColor = "rgba(240, 153, 251, 0.5)";
+                  e.currentTarget.style.transform = "translateY(-4px)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = "rgba(240, 153, 251, 0.1)";
+                  e.currentTarget.style.borderColor = "rgba(240, 153, 251, 0.3)";
+                  e.currentTarget.style.transform = "translateY(0)";
+                }}
               >
                 <span style={{ fontSize: 32, display: "flex" }}><Icons.Sparkles /></span>
                 <span style={S.modeTitle}>Đăng ký</span>
@@ -235,8 +264,8 @@ function LoginPageContent() {
             <p
               style={{
                 textAlign: "center",
-                fontSize: 12,
-                color: "#94a3b8",
+                fontSize: 13,
+                color: "rgba(255, 255, 255, 0.5)",
                 margin: 0,
               }}
             >
@@ -261,6 +290,16 @@ function LoginPageContent() {
               style={{ ...S.googleBtn, opacity: isLoading ? 0.6 : 1 }}
               disabled={isLoading}
               onClick={handleGoogle}
+              onMouseEnter={(e) => {
+                if (!isLoading) {
+                  e.currentTarget.style.transform = "translateY(-2px)";
+                  e.currentTarget.style.boxShadow = "0 12px 30px rgba(102, 126, 234, 0.5)";
+                }
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.boxShadow = "0 8px 20px rgba(102, 126, 234, 0.4)";
+              }}
             >
               <GoogleIcon />
               {isLoading ? loadingText : "Đăng nhập với Google"}
@@ -285,7 +324,7 @@ function LoginPageContent() {
                 ← Quay lại
               </button>
               <span
-                style={{ ...S.badge, background: "#dcfce7", color: "#059669" }}
+                style={{ ...S.badge, background: "linear-gradient(135deg, #f093fb, #f5576c)" }}
               >
                 Đăng ký
               </span>
@@ -305,7 +344,7 @@ function LoginPageContent() {
               ].map((s, i) => (
                 <div key={s} style={S.stepRow}>
                   <div style={S.stepDot}>{i + 1}</div>
-                  <span style={{ fontSize: 13, color: "#374151" }}>{s}</span>
+                  <span style={{ fontSize: 13, color: "rgba(255, 255, 255, 0.8)" }}>{s}</span>
                 </div>
               ))}
             </div>
@@ -313,11 +352,21 @@ function LoginPageContent() {
             <button
               style={{
                 ...S.googleBtn,
-                background: "#059669",
+                background: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
                 opacity: isLoading ? 0.6 : 1,
               }}
               disabled={isLoading}
               onClick={handleGoogle}
+              onMouseEnter={(e) => {
+                if (!isLoading) {
+                  e.currentTarget.style.transform = "translateY(-2px)";
+                  e.currentTarget.style.boxShadow = "0 12px 30px rgba(240, 147, 251, 0.4)";
+                }
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.boxShadow = "0 8px 20px rgba(102, 126, 234, 0.4)";
+              }}
             >
               <GoogleIcon />
               {isLoading ? loadingText : "Đăng ký với Google"}
@@ -377,102 +426,127 @@ function GoogleIcon() {
 const S: Record<string, React.CSSProperties> = {
   page: {
     minHeight: "100vh",
-    background: "linear-gradient(135deg, #0891b2 0%, #06b6d4 50%, #22d3ee 100%)",
+    background: "linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     padding: 20,
     fontFamily: "'Roboto', sans-serif",
+    position: "relative" as const,
+    overflow: "hidden",
+  },
+  backgroundShapes: {
+    position: "absolute" as const,
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    overflow: "hidden" as const,
+    zIndex: 0,
+  },
+  shape: {
+    position: "absolute" as const,
+    borderRadius: "50%",
+    animation: "float 20s ease-in-out infinite",
   },
   card: {
     width: "100%",
     maxWidth: 440,
-    background: "#fff",
+    background: "rgba(255, 255, 255, 0.1)",
+    backdropFilter: "blur(20px)",
+    WebkitBackdropFilter: "blur(20px)",
     borderRadius: 28,
     padding: 40,
-    boxShadow: "0 20px 60px rgba(0, 0, 0, 0.2)",
+    boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5)",
+    border: "1px solid rgba(255, 255, 255, 0.2)",
+    position: "relative" as const,
+    zIndex: 1,
   },
   logoWrap: { textAlign: "center", marginBottom: 32 },
   logoBox: {
-    width: 72,
-    height: 72,
-    borderRadius: 22,
-    background: "linear-gradient(135deg, #0891b2, #06b6d4)",
+    width: 80,
+    height: 80,
+    borderRadius: 24,
+    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     fontSize: 32,
     margin: "0 auto 16px",
-    boxShadow: "0 8px 24px rgba(8, 145, 178, 0.3)",
+    boxShadow: "0 20px 40px rgba(102, 126, 234, 0.4)",
+    animation: "pulse 3s ease-in-out infinite",
   },
   appName: {
-    fontSize: 26,
+    fontSize: 32,
     fontWeight: 800,
-    background: "linear-gradient(135deg, #0891b2, #06b6d4)",
+    background: "linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)",
     WebkitBackgroundClip: "text",
     WebkitTextFillColor: "transparent",
     margin: "0 0 8px",
+    letterSpacing: "-0.5px",
   },
-  appDesc: { fontSize: 14, color: "#64748b", margin: 0, lineHeight: 1.5 },
+  appDesc: { fontSize: 14, color: "rgba(255, 255, 255, 0.7)", margin: 0, lineHeight: 1.5 },
   modeGrid: {
     display: "grid",
     gridTemplateColumns: "1fr 1fr",
-    gap: 14,
-    marginBottom: 20,
+    gap: 16,
+    marginBottom: 24,
   },
   modeCard: {
-    padding: "22px 16px",
-    borderRadius: 18,
-    border: "1.5px solid #e0f2fe",
-    background: "#f0f9ff",
+    padding: "24px 20px",
+    borderRadius: 20,
+    border: "1px solid rgba(255, 255, 255, 0.1)",
+    background: "rgba(255, 255, 255, 0.05)",
     cursor: "pointer",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    gap: 8,
-    transition: "all 0.2s",
+    gap: 12,
+    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
   },
-  modeTitle: { fontSize: 16, fontWeight: 700, color: "#0f172a" },
-  modeDesc: { fontSize: 12, color: "#64748b" },
+  modeTitle: { fontSize: 17, fontWeight: 700, color: "#fff", letterSpacing: "-0.3px" },
+  modeDesc: { fontSize: 12, color: "rgba(255, 255, 255, 0.5)" },
   backRow: {
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 16,
+    marginBottom: 20,
   },
   backBtn: {
     background: "none",
     border: "none",
     fontSize: 14,
-    color: "#0891b2",
+    color: "rgba(255, 255, 255, 0.7)",
     cursor: "pointer",
     padding: 0,
+    transition: "color 0.2s",
   },
   badge: {
     fontSize: 12,
     fontWeight: 600,
-    padding: "4px 12px",
+    padding: "6px 14px",
     borderRadius: 99,
-    background: "linear-gradient(135deg, #0891b2, #06b6d4)",
+    background: "linear-gradient(135deg, #667eea, #764ba2)",
     color: "#fff",
+    boxShadow: "0 4px 15px rgba(102, 126, 234, 0.4)",
   },
-  hint: { fontSize: 14, color: "#64748b", lineHeight: 1.6, margin: "0 0 20px" },
+  hint: { fontSize: 14, color: "rgba(255, 255, 255, 0.6)", lineHeight: 1.6, margin: "0 0 24px" },
   stepPreview: {
-    background: "linear-gradient(135deg, #f0f9ff, #e0f2fe)",
+    background: "rgba(255, 255, 255, 0.05)",
     borderRadius: 16,
-    padding: "16px 18px",
-    marginBottom: 20,
+    padding: "18px 20px",
+    marginBottom: 24,
     display: "flex",
     flexDirection: "column",
-    gap: 12,
-    border: "1px solid #cffafe",
+    gap: 14,
+    border: "1px solid rgba(255, 255, 255, 0.1)",
   },
-  stepRow: { display: "flex", alignItems: "center", gap: 12 },
+  stepRow: { display: "flex", alignItems: "center", gap: 14 },
   stepDot: {
-    width: 26,
-    height: 26,
+    width: 28,
+    height: 28,
     borderRadius: 8,
-    background: "linear-gradient(135deg, #0891b2, #06b6d4)",
+    background: "linear-gradient(135deg, #667eea, #764ba2)",
     color: "#fff",
     fontSize: 12,
     fontWeight: 700,
@@ -480,50 +554,73 @@ const S: Record<string, React.CSSProperties> = {
     alignItems: "center",
     justifyContent: "center",
     flexShrink: 0,
+    boxShadow: "0 4px 12px rgba(102, 126, 234, 0.4)",
   },
   googleBtn: {
     width: "100%",
-    height: 54,
-    background: "linear-gradient(135deg, #0891b2, #06b6d4)",
+    height: 56,
+    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
     color: "#fff",
     border: "none",
-    borderRadius: 14,
-    fontSize: 15,
+    borderRadius: 16,
+    fontSize: 16,
     fontWeight: 600,
     cursor: "pointer",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     gap: 12,
-    transition: "all 0.2s",
-    boxShadow: "0 4px 14px rgba(8, 145, 178, 0.4)",
+    transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+    boxShadow: "0 8px 20px rgba(102, 126, 234, 0.4)",
   },
   switchText: {
     textAlign: "center",
     fontSize: 14,
-    color: "#64748b",
+    color: "rgba(255, 255, 255, 0.6)",
     margin: "16px 0 0",
   },
   switchLink: {
     background: "none",
     border: "none",
-    color: "#0891b2",
+    color: "#a78bfa",
     fontSize: 14,
     fontWeight: 600,
     cursor: "pointer",
     padding: 0,
+    transition: "color 0.2s",
   },
   errorBox: {
     display: "flex",
     alignItems: "flex-start",
     gap: 10,
-    background: "#fef2f2",
+    background: "rgba(239, 68, 68, 0.15)",
     borderRadius: 12,
     padding: "14px 16px",
     fontSize: 14,
-    color: "#dc2626",
+    color: "#fca5a5",
     marginTop: 16,
     lineHeight: 1.5,
-    border: "1px solid #fecaca",
+    border: "1px solid rgba(239, 68, 68, 0.3)",
   },
 };
+
+const keyframes = `
+  @keyframes float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    25% { transform: translateY(-20px) rotate(5deg); }
+    50% { transform: translateY(0) rotate(0deg); }
+    75% { transform: translateY(20px) rotate(-5deg); }
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+`;

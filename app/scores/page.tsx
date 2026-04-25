@@ -31,14 +31,14 @@ interface SubjectStats {
 }
 
 const SUBJECT_INFO: Record<string, { name: string; icon: string; color: string; track: string[] }> = {
-  math: { name: "Toán", icon: "Math", color: "#2563eb", track: ["science", "social", "mixed"] },
-  literature: { name: "Ngữ Văn", icon: "Literature", color: "#d97706", track: ["social", "mixed"] },
-  english: { name: "Tiếng Anh", icon: "English", color: "#059669", track: ["science", "social", "mixed"] },
-  physics: { name: "Vật Lý", icon: "Physics", color: "#7c3aed", track: ["science", "mixed"] },
-  chemistry: { name: "Hóa Học", icon: "Chemistry", color: "#dc2626", track: ["science", "mixed"] },
-  history: { name: "Lịch Sử", icon: "History", color: "#4f46e5", track: ["social", "mixed"] },
-  geography: { name: "Địa Lý", icon: "Geography", color: "#0d9488", track: ["social", "mixed"] },
-  civic: { name: "GDCD", icon: "Civic", color: "#ea580c", track: ["social", "mixed"] },
+  math: { name: "Toán", icon: "Math", color: "#667eea", track: ["science", "social", "mixed"] },
+  literature: { name: "Ngữ Văn", icon: "Literature", color: "#f59e0b", track: ["social", "mixed"] },
+  english: { name: "Tiếng Anh", icon: "English", color: "#10b981", track: ["science", "social", "mixed"] },
+  physics: { name: "Vật Lý", icon: "Physics", color: "#8b5cf6", track: ["science", "mixed"] },
+  chemistry: { name: "Hóa Học", icon: "Chemistry", color: "#ef4444", track: ["science", "mixed"] },
+  history: { name: "Lịch Sử", icon: "History", color: "#6366f1", track: ["social", "mixed"] },
+  geography: { name: "Địa Lý", icon: "Geography", color: "#14b8a6", track: ["social", "mixed"] },
+  civic: { name: "GDCD", icon: "Civic", color: "#f97316", track: ["social", "mixed"] },
 };
 
 const TRACK_SUBJECTS: Record<string, string[]> = {
@@ -104,7 +104,9 @@ export default function ScoresPage() {
     const subjectResults = results.filter(r => r.subject === subject);
     const info = SUBJECT_INFO[subject] || { name: subject, icon: "📚", color: "#64748b", track: [] };
     
-    if (subjectResults.length === 0) {
+    const validResults = subjectResults.filter((r: any) => r.maxScore > 0 && r.score != null);
+    
+    if (validResults.length === 0) {
       return {
         name: info.name,
         icon: info.icon,
@@ -118,7 +120,7 @@ export default function ScoresPage() {
       };
     }
 
-    const scores = subjectResults.map(r => ({
+    const scores = validResults.map(r => ({
       date: r.date,
       score: (r.score / r.maxScore) * 10,
     }));
@@ -160,21 +162,23 @@ export default function ScoresPage() {
   
   const trackResults = results.filter(r => trackSubjects.includes(r.subject));
   
+  const validResults = trackResults.filter((r: any) => r.maxScore > 0 && r.score != null);
+  
   const overallStats = {
     totalExams: trackResults.length,
-    avgScore: trackResults.length > 0 
-      ? trackResults.reduce((s, r) => s + (r.score / r.maxScore) * 10, 0) / trackResults.length 
+    avgScore: validResults.length > 0 
+      ? validResults.reduce((s, r) => s + (r.score / r.maxScore) * 10, 0) / validResults.length 
       : 0,
     avgScore30: 0,
-    bestScore: trackResults.length > 0 
-      ? Math.max(...trackResults.map(r => (r.score / r.maxScore) * 10))
+    bestScore: validResults.length > 0 
+      ? Math.max(...validResults.map(r => (r.score / r.maxScore) * 10))
       : 0,
     schoolTarget: profile?.targetSchoolScore || 7,
     uniTarget: profile?.targetUniScore || 18,
     trackSubjects: trackSubjects.length,
   };
 
-  if (trackResults.length > 0) {
+  if (validResults.length > 0 && !isNaN(overallStats.avgScore)) {
     overallStats.avgScore30 = (overallStats.avgScore / 10) * 30;
   }
 
@@ -237,8 +241,8 @@ export default function ScoresPage() {
             />
           </div>
           <div style={styles.progressLabel}>
-            Hiện tại: {overallStats.avgScore.toFixed(1)}/10 
-            ({((overallStats.avgScore / overallStats.schoolTarget) * 100).toFixed(0)}%)
+            Hiện tại: {!isNaN(overallStats.avgScore) && overallStats.avgScore > 0 ? overallStats.avgScore.toFixed(1) : "—"}/10 
+            ({!isNaN(overallStats.avgScore) && overallStats.avgScore > 0 ? ((overallStats.avgScore / overallStats.schoolTarget) * 100).toFixed(0) : "0"}%)
           </div>
         </div>
 
@@ -260,9 +264,9 @@ export default function ScoresPage() {
             />
           </div>
           <div style={styles.progressLabel}>
-            {overallStats.avgScore >= overallStats.uniTarget 
+            {!isNaN(overallStats.avgScore) && overallStats.avgScore > 0 ? (overallStats.avgScore >= overallStats.uniTarget 
               ? "✓ Đạt mục tiêu!" 
-              : `Cần thêm ${(overallStats.uniTarget - overallStats.avgScore).toFixed(1)} điểm`}
+              : `Cần thêm ${(overallStats.uniTarget - overallStats.avgScore).toFixed(1)} điểm`) : "—"}
           </div>
         </div>
       </div>
@@ -274,11 +278,11 @@ export default function ScoresPage() {
           <div style={styles.statLabel}>Bài đã làm</div>
         </div>
         <div style={styles.statCard}>
-          <div style={styles.statValue}>{overallStats.avgScore.toFixed(1)}</div>
+          <div style={styles.statValue}>{!isNaN(overallStats.avgScore) && overallStats.avgScore > 0 ? overallStats.avgScore.toFixed(1) : "—"}</div>
           <div style={styles.statLabel}>Điểm TB</div>
         </div>
         <div style={styles.statCard}>
-          <div style={styles.statValue}>{overallStats.bestScore.toFixed(1)}</div>
+          <div style={styles.statValue}>{!isNaN(overallStats.bestScore) && overallStats.bestScore > 0 ? overallStats.bestScore.toFixed(1) : "—"}</div>
           <div style={styles.statLabel}>Điểm cao nhất</div>
         </div>
       </div>
@@ -294,10 +298,10 @@ export default function ScoresPage() {
             key={tab.key}
             style={{
               ...styles.tab,
-              background: activeTab === tab.key ? "#0891b2" : "transparent",
-              color: activeTab === tab.key ? "#fff" : "#64748b",
+              background: activeTab === tab.key ? "linear-gradient(135deg, #667eea, #764ba2)" : "transparent",
+              color: activeTab === tab.key ? "#fff" : "rgba(255,255,255,0.6)",
               border: "none",
-              boxShadow: activeTab === tab.key ? "0 2px 8px rgba(8, 145, 178, 0.3)" : "none",
+              boxShadow: activeTab === tab.key ? "0 4px 15px rgba(102, 126, 234, 0.4)" : "none",
             }}
             onClick={() => setActiveTab(tab.key as any)}
           >
@@ -343,7 +347,7 @@ export default function ScoresPage() {
                       fontWeight: 700, 
                       color: stats.color 
                     }}>
-                      {stats.avgScore.toFixed(1)}
+                      {!isNaN(stats.avgScore) && stats.avgScore > 0 ? stats.avgScore.toFixed(1) : "—"}
                     </div>
                     <div style={{
                       ...styles.subjectBest,
@@ -396,19 +400,19 @@ export default function ScoresPage() {
               <div style={styles.subjectStats}>
                 <div style={styles.subjectStatItem}>
                   <div style={styles.subjectStatValue}>
-                    {getSubjectStats(selectedSubject).avgScore.toFixed(1)}
+                    {!isNaN(getSubjectStats(selectedSubject).avgScore) && getSubjectStats(selectedSubject).avgScore > 0 ? getSubjectStats(selectedSubject).avgScore.toFixed(1) : "—"}
                   </div>
                   <div style={styles.subjectStatLabel}>Trung bình</div>
                 </div>
                 <div style={styles.subjectStatItem}>
                   <div style={styles.subjectStatValue}>
-                    {getSubjectStats(selectedSubject).bestScore.toFixed(1)}
+                    {!isNaN(getSubjectStats(selectedSubject).bestScore) && getSubjectStats(selectedSubject).bestScore > 0 ? getSubjectStats(selectedSubject).bestScore.toFixed(1) : "—"}
                   </div>
                   <div style={styles.subjectStatLabel}>Cao nhất</div>
                 </div>
                 <div style={styles.subjectStatItem}>
                   <div style={styles.subjectStatValue}>
-                    {getSubjectStats(selectedSubject).latestScore.toFixed(1)}
+                    {!isNaN(getSubjectStats(selectedSubject).latestScore) && getSubjectStats(selectedSubject).latestScore > 0 ? getSubjectStats(selectedSubject).latestScore.toFixed(1) : "—"}
                   </div>
                   <div style={styles.subjectStatLabel}>Lần gần nhất</div>
                 </div>
@@ -467,10 +471,10 @@ export default function ScoresPage() {
                     {stats.attempts > 0 ? (
                       <>
                         <div style={{ fontSize: 18, fontWeight: 700, color: stats.color }}>
-                          {stats.avgScore.toFixed(1)}
+                          {!isNaN(stats.avgScore) && stats.avgScore > 0 ? stats.avgScore.toFixed(1) : "—"}
                         </div>
                         <div style={styles.subjectBest}>
-                          Cao nhất: {stats.bestScore.toFixed(1)}
+                          Cao nhất: {!isNaN(stats.bestScore) && stats.bestScore > 0 ? stats.bestScore.toFixed(1) : "—"}
                         </div>
                       </>
                     ) : (
@@ -516,9 +520,9 @@ export default function ScoresPage() {
                     <div style={{ 
                       fontSize: 20, 
                       fontWeight: 700, 
-                      color: score >= 5 ? "#059669" : "#dc2626" 
+                      color: !isNaN(score) && score >= 5 ? "#059669" : "#dc2626" 
                     }}>
-                      {score.toFixed(1)}
+                      {!isNaN(score) && score > 0 ? score.toFixed(1) : "—"}
                     </div>
                     <div style={styles.historyMax}>/10</div>
                   </div>
@@ -551,11 +555,9 @@ export default function ScoresPage() {
 const styles: Record<string, React.CSSProperties> = {
   container: {
     minHeight: "100vh",
-    background: "linear-gradient(180deg, #f0f9ff 0%, #e0f2fe 50%, #f8fafc 100%)",
-    padding: "24px 20px",
+    background: "linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)",
+    padding: "24px 24px 60px",
     fontFamily: "'Roboto', sans-serif",
-    maxWidth: 800,
-    margin: "0 auto",
   },
   loading: {
     minHeight: "100vh",
@@ -564,14 +566,14 @@ const styles: Record<string, React.CSSProperties> = {
     alignItems: "center",
     justifyContent: "center",
     gap: 16,
-    background: "#f8fafc",
+    background: "linear-gradient(135deg, #1a1a2e, #16213e)",
   },
   spinner: {
     width: 48,
     height: 48,
     borderRadius: "50%",
-    border: "3px solid #e2e8f0",
-    borderTop: "3px solid #0891b2",
+    border: "3px solid rgba(255,255,255,0.2)",
+    borderTop: "3px solid #667eea",
     animation: "spin 1s linear infinite",
   },
   header: {
@@ -581,7 +583,7 @@ const styles: Record<string, React.CSSProperties> = {
     background: "none",
     border: "none",
     fontSize: 14,
-    color: "#0891b2",
+    color: "rgba(255,255,255,0.6)",
     cursor: "pointer",
     padding: 0,
     marginBottom: 12,
@@ -589,17 +591,17 @@ const styles: Record<string, React.CSSProperties> = {
   title: {
     fontSize: 24,
     fontWeight: 800,
-    color: "#0f172a",
+    color: "#fff",
     margin: 0,
   },
   trackBadge: {
     display: "inline-block",
     marginTop: 8,
     padding: "4px 12px",
-    background: "linear-gradient(135deg, #e0f2fe, #cffafe)",
+    background: "rgba(167, 139, 250, 0.2)",
     borderRadius: 99,
     fontSize: 12,
-    color: "#0891b2",
+    color: "#a78bfa",
     fontWeight: 500,
   },
   targetSection: {
@@ -609,11 +611,12 @@ const styles: Record<string, React.CSSProperties> = {
     marginBottom: 20,
   },
   targetCard: {
-    background: "#fff",
+    background: "rgba(255,255,255,0.08)",
+    backdropFilter: "blur(10px)",
     borderRadius: 18,
     padding: 18,
-    boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
-    border: "1px solid #e0f2fe",
+    boxShadow: "0 8px 32px rgba(0,0,0,0.3)",
+    border: "1px solid rgba(255,255,255,0.1)",
   },
   targetHeader: {
     display: "flex",
@@ -626,20 +629,20 @@ const styles: Record<string, React.CSSProperties> = {
   },
   targetLabel: {
     fontSize: 12,
-    color: "#94a3b8",
+    color: "rgba(255,255,255,0.5)",
   },
   targetValue: {
     fontSize: 20,
     fontWeight: 700,
-    color: "#0f172a",
+    color: "#fff",
   },
   progressBar: {
     height: 10,
-    background: "#f0fdfa",
+    background: "rgba(255,255,255,0.1)",
     borderRadius: 99,
     overflow: "hidden",
     marginBottom: 10,
-    border: "1px solid #e0f2fe",
+    border: "1px solid rgba(255,255,255,0.1)",
   },
   progressFill: {
     height: "100%",
@@ -648,7 +651,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   progressLabel: {
     fontSize: 12,
-    color: "#64748b",
+    color: "rgba(255,255,255,0.6)",
   },
   statsGrid: {
     display: "grid",
@@ -657,31 +660,32 @@ const styles: Record<string, React.CSSProperties> = {
     marginBottom: 20,
   },
   statCard: {
-    background: "#fff",
+    background: "rgba(255,255,255,0.08)",
+    backdropFilter: "blur(10px)",
     borderRadius: 18,
     padding: 18,
     textAlign: "center",
-    boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
-    border: "1px solid #e0f2fe",
+    boxShadow: "0 8px 32px rgba(0,0,0,0.3)",
+    border: "1px solid rgba(255,255,255,0.1)",
   },
   statValue: {
     fontSize: 26,
     fontWeight: 800,
-    color: "#0e7490",
+    color: "#fff",
     marginBottom: 4,
   },
   statLabel: {
     fontSize: 12,
-    color: "#94a3b8",
+    color: "rgba(255,255,255,0.5)",
   },
   tabs: {
     display: "flex",
     gap: 8,
     marginBottom: 20,
-    background: "#fff",
+    background: "rgba(255,255,255,0.05)",
     padding: 6,
     borderRadius: 14,
-    boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
+    boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
   },
   tab: {
     flex: 1,
@@ -699,7 +703,7 @@ const styles: Record<string, React.CSSProperties> = {
   sectionTitle: {
     fontSize: 16,
     fontWeight: 700,
-    color: "#0f172a",
+    color: "#fff",
     margin: "0 0 14px",
   },
   subjectList: {
@@ -708,16 +712,17 @@ const styles: Record<string, React.CSSProperties> = {
     gap: 10,
   },
   subjectCard: {
-    background: "#fff",
+    background: "rgba(255,255,255,0.08)",
+    backdropFilter: "blur(10px)",
     borderRadius: 16,
     padding: 16,
     display: "flex",
     alignItems: "center",
     gap: 14,
-    boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
-    border: "1px solid #f1f5f9",
+    boxShadow: "0 8px 32px rgba(0,0,0,0.3)",
+    border: "1px solid rgba(255,255,255,0.1)",
     cursor: "pointer",
-    transition: "all 0.15s",
+    transition: "all 0.2s ease",
   },
   subjectIcon: {
     width: 48,
@@ -733,26 +738,27 @@ const styles: Record<string, React.CSSProperties> = {
   subjectName: {
     fontSize: 15,
     fontWeight: 600,
-    color: "#0f172a",
+    color: "#fff",
   },
   subjectAttempts: {
     fontSize: 12,
-    color: "#94a3b8",
+    color: "rgba(255,255,255,0.5)",
   },
   subjectScore: {
     textAlign: "right",
   },
   subjectBest: {
     fontSize: 11,
-    color: "#94a3b8",
+    color: "rgba(255,255,255,0.5)",
   },
   subjectDetail: {
-    background: "#fff",
+    background: "rgba(255,255,255,0.08)",
+    backdropFilter: "blur(10px)",
     borderRadius: 18,
     padding: 22,
     marginBottom: 20,
-    boxShadow: "0 4px 12px rgba(0,0,0,0.06)",
-    border: "1px solid #f1f5f9",
+    boxShadow: "0 8px 32px rgba(0,0,0,0.3)",
+    border: "1px solid rgba(255,255,255,0.1)",
   },
   subjectHeader: {
     display: "flex",
@@ -769,18 +775,19 @@ const styles: Record<string, React.CSSProperties> = {
   subjectStatItem: {
     textAlign: "center",
     padding: 14,
-    background: "linear-gradient(135deg, #f0f9ff, #e0f2fe)",
+    background: "rgba(255,255,255,0.05)",
     borderRadius: 14,
+    border: "1px solid rgba(255,255,255,0.1)",
   },
   subjectStatValue: {
     fontSize: 22,
     fontWeight: 700,
-    color: "#0e7490",
+    color: "#fff",
     marginBottom: 4,
   },
   subjectStatLabel: {
     fontSize: 11,
-    color: "#64748b",
+    color: "rgba(255,255,255,0.5)",
   },
   miniChart: {
     marginTop: 18,
@@ -788,7 +795,7 @@ const styles: Record<string, React.CSSProperties> = {
   chartTitle: {
     fontSize: 13,
     fontWeight: 600,
-    color: "#64748b",
+    color: "rgba(255,255,255,0.6)",
     marginBottom: 12,
   },
   chart: {
@@ -811,7 +818,7 @@ const styles: Record<string, React.CSSProperties> = {
   },
   chartLabel: {
     fontSize: 10,
-    color: "#94a3b8",
+    color: "rgba(255,255,255,0.4)",
     marginTop: 6,
   },
   historyList: {
@@ -820,14 +827,15 @@ const styles: Record<string, React.CSSProperties> = {
     gap: 10,
   },
   historyItem: {
-    background: "#fff",
+    background: "rgba(255,255,255,0.08)",
+    backdropFilter: "blur(10px)",
     borderRadius: 16,
     padding: 16,
     display: "flex",
     alignItems: "center",
     gap: 14,
-    boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
-    border: "1px solid #f1f5f9",
+    boxShadow: "0 8px 32px rgba(0,0,0,0.3)",
+    border: "1px solid rgba(255,255,255,0.1)",
   },
   historyIcon: {
     width: 44,
@@ -843,7 +851,7 @@ const styles: Record<string, React.CSSProperties> = {
   historyName: {
     fontSize: 14,
     fontWeight: 600,
-    color: "#0f172a",
+    color: "#fff",
   },
   historyDate: {
     fontSize: 12,

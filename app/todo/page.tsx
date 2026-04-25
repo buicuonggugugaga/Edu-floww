@@ -143,15 +143,15 @@ export default function TodoPage() {
 
       {/* Stats Cards */}
       <div style={styles.statsRow}>
-        <div style={{...styles.statCard, background: "linear-gradient(135deg, #0891b2, #06b6d4)"}}>
+        <div style={{...styles.statCard, background: "linear-gradient(135deg, #667eea, #764ba2)"}}>
           <span style={styles.statValue}>{pendingCount}</span>
           <span style={styles.statLabel}>Đang chờ</span>
         </div>
-        <div style={{...styles.statCard, background: "linear-gradient(135deg, #059669, #10b981)"}}>
+        <div style={{...styles.statCard, background: "linear-gradient(135deg, #10b981, #059669)"}}>
           <span style={styles.statValue}>{completedCount}</span>
           <span style={styles.statLabel}>Hoàn thành</span>
         </div>
-        <div style={{...styles.statCard, background: "linear-gradient(135deg, #7c3aed, #a855f7)"}}>
+        <div style={{...styles.statCard, background: "linear-gradient(135deg, #f59e0b, #d97706)"}}>
           <span style={styles.statValue}>{todos.length}</span>
           <span style={styles.statLabel}>Tổng cộng</span>
         </div>
@@ -169,15 +169,15 @@ export default function TodoPage() {
             onClick={() => setFilter(tab.key as any)}
             style={{
               ...styles.filterTab,
-              background: filter === tab.key ? "linear-gradient(135deg, #0891b2, #06b6d4)" : "#fff",
-              color: filter === tab.key ? "#fff" : "#64748b",
+              background: filter === tab.key ? "linear-gradient(135deg, #667eea, #764ba2)" : "rgba(255,255,255,0.08)",
+              color: filter === tab.key ? "#fff" : "rgba(255,255,255,0.6)",
             }}
           >
             {tab.label}
             <span style={{
               ...styles.filterCount,
-              background: filter === tab.key ? "rgba(255,255,255,0.3)" : "#f1f5f9",
-              color: filter === tab.key ? "#fff" : "#64748b",
+              background: filter === tab.key ? "rgba(255,255,255,0.3)" : "rgba(255,255,255,0.1)",
+              color: filter === tab.key ? "#fff" : "rgba(255,255,255,0.6)",
             }}>
               {tab.count}
             </span>
@@ -209,9 +209,9 @@ export default function TodoPage() {
                     onClick={() => setSelectedSubject(selectedSubject === sub.id ? null : sub.id)}
                     style={{
                       ...styles.subjectBtn,
-                      background: selectedSubject === sub.id ? sub.color : "#f8fafc",
+                      background: selectedSubject === sub.id ? sub.color : "rgba(255,255,255,0.08)",
                       color: selectedSubject === sub.id ? "#fff" : sub.color,
-                      borderColor: selectedSubject === sub.id ? sub.color : "#e2e8f0",
+                      borderColor: selectedSubject === sub.id ? sub.color : "rgba(255,255,255,0.1)",
                     }}
                   >
                     {IconComponent && <span style={{ display: "flex", alignItems: "center", gap: 6 }}><IconComponent /> {sub.name}</span>}
@@ -230,9 +230,9 @@ export default function TodoPage() {
                   onClick={() => setSelectedPriority(p.id as any)}
                   style={{
                     ...styles.priorityBtn,
-                    background: selectedPriority === p.id ? p.color : p.bg,
-                    color: selectedPriority === p.id ? "#fff" : p.color,
-                    borderColor: selectedPriority === p.id ? p.color : "transparent",
+                    background: selectedPriority === p.id ? p.color + "20" : "rgba(255,255,255,0.08)",
+                    color: selectedPriority === p.id ? p.color : "rgba(255,255,255,0.7)",
+                    borderColor: selectedPriority === p.id ? p.color : "rgba(255,255,255,0.1)",
                   }}
                 >
                   {p.label}
@@ -274,16 +274,16 @@ export default function TodoPage() {
                   key={todo.id} 
                   style={{
                     ...styles.todoItem,
-                    opacity: todo.completed ? 0.7 : 1,
-                    background: todo.completed ? "#f8fafc" : "#fff",
+                    opacity: todo.completed ? 0.6 : 1,
+                    background: todo.completed ? "rgba(255,255,255,0.04)" : "rgba(255,255,255,0.08)",
                   }}
                 >
                   <button
                     onClick={() => toggleTodo(todo.id)}
                     style={{
                       ...styles.checkbox,
-                      background: todo.completed ? "linear-gradient(135deg, #0891b2, #06b6d4)" : "#fff",
-                      borderColor: todo.completed ? "#0891b2" : "#d1d5db",
+                      background: todo.completed ? "linear-gradient(135deg, #667eea, #764ba2)" : "rgba(255,255,255,0.08)",
+                      borderColor: todo.completed ? "#667eea" : "rgba(255,255,255,0.2)",
                       animation: todo.completed ? "check 0.3s ease" : "none",
                     }}
                   >
@@ -294,20 +294,20 @@ export default function TodoPage() {
                   <span style={{
                     ...styles.todoText,
                     textDecoration: todo.completed ? "line-through" : "none",
-                    color: todo.completed ? "#94a3b8" : "#0f172a",
+                    color: todo.completed ? "rgba(255,255,255,0.5)" : "#fff",
                   }}>
                     {todo.text}
                   </span>
                   <div style={styles.todoMeta}>
                     {subject && (
-                      <span style={{...styles.todoTag, background: subject.color + "20", color: subject.color}}>
+                      <span style={{...styles.todoTag, background: subject.color + "30", color: subject.color}}>
                         <span style={{ display: "flex", alignItems: "center", gap: 4 }}>
                           {(() => { const IconC = Icons[subject.icon as keyof typeof Icons]; return IconC ? <IconC /> : null; })()}
                           {subject.name}
                         </span>
                       </span>
                     )}
-                    <span style={{...styles.todoTag, background: priority?.bg, color: priority?.color}}>
+                    <span style={{...styles.todoTag, background: priority?.color + "20", color: priority?.color}}>
                       {priority?.label}
                     </span>
                   </div>
@@ -374,7 +374,7 @@ export default function TodoPage() {
                 }}
                 style={styles.quickBtn}
               >
-                <span style={{...styles.quickBtnIcon, background: sub?.color + "20", color: sub?.color}}>
+                <span style={{...styles.quickBtnIcon, background: (sub?.color || "#667eea") + "20", color: sub?.color || "#667eea"}}>
                   {IconC && <IconC />}
                 </span>
                 {q.text}
@@ -390,11 +390,10 @@ export default function TodoPage() {
 const styles: Record<string, React.CSSProperties> = {
   container: {
     minHeight: "100vh",
-    background: "linear-gradient(180deg, #f0f9ff 0%, #e0f2fe 50%, #f8fafc 100%)",
-    padding: "24px 20px",
+    background: "linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%)",
+    backgroundAttachment: "fixed",
+    padding: "24px 24px 60px",
     fontFamily: "'Roboto', sans-serif",
-    maxWidth: 800,
-    margin: "0 auto",
   },
   loading: {
     minHeight: "100vh",
@@ -403,14 +402,14 @@ const styles: Record<string, React.CSSProperties> = {
     alignItems: "center",
     justifyContent: "center",
     gap: 16,
-    background: "#f8fafc",
+    background: "linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%)",
   },
   spinner: {
     width: 48,
     height: 48,
     borderRadius: "50%",
-    border: "3px solid #e2e8f0",
-    borderTop: "3px solid #0891b2",
+    border: "3px solid rgba(255,255,255,0.2)",
+    borderTop: "3px solid #667eea",
     animation: "spin 1s linear infinite",
   },
   header: {
@@ -420,20 +419,26 @@ const styles: Record<string, React.CSSProperties> = {
     background: "none",
     border: "none",
     fontSize: 14,
-    color: "#0891b2",
+    color: "rgba(255,255,255,0.7)",
     cursor: "pointer",
     padding: "8px 0",
     marginBottom: 16,
+    display: "flex",
+    alignItems: "center",
+    gap: 6,
   },
   title: {
     fontSize: 28,
     fontWeight: 800,
-    color: "#0f172a",
+    color: "#fff",
     margin: "0 0 8px",
+    display: "flex",
+    alignItems: "center",
+    gap: 10,
   },
   subtitle: {
     fontSize: 15,
-    color: "#64748b",
+    color: "rgba(255,255,255,0.6)",
     margin: 0,
   },
   statsRow: {
@@ -446,8 +451,8 @@ const styles: Record<string, React.CSSProperties> = {
     borderRadius: 16,
     padding: "16px",
     textAlign: "center",
-    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.08)",
-    border: "1px solid #e0f2fe",
+    boxShadow: "0 4px 20px rgba(0,0,0,0.3)",
+    border: "1px solid rgba(255,255,255,0.1)",
   },
   statValue: {
     display: "block",
@@ -457,16 +462,18 @@ const styles: Record<string, React.CSSProperties> = {
   },
   statLabel: {
     fontSize: 12,
-    color: "rgba(255, 255, 255, 0.9)",
+    color: "rgba(255,255,255,0.8)",
   },
   filterTabs: {
     display: "flex",
     gap: 8,
     marginBottom: 20,
-    background: "#fff",
+    background: "rgba(255,255,255,0.08)",
     padding: 6,
     borderRadius: 14,
-    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.06)",
+    backdropFilter: "blur(10px)",
+    boxShadow: "0 4px 20px rgba(0,0,0,0.3)",
+    border: "1px solid rgba(255,255,255,0.1)",
   },
   filterTab: {
     flex: 1,
@@ -492,31 +499,36 @@ const styles: Record<string, React.CSSProperties> = {
     width: "100%",
     padding: "14px 20px",
     borderRadius: 14,
-    border: "2px dashed #0891b2",
-    background: "transparent",
-    color: "#0891b2",
+    border: "2px dashed rgba(102,126,234,0.6)",
+    background: "rgba(255,255,255,0.05)",
+    color: "#a5b4fc",
     fontSize: 14,
     fontWeight: 600,
     cursor: "pointer",
     marginBottom: 20,
+    transition: "all 0.2s",
   },
   addForm: {
-    background: "#fff",
+    background: "rgba(255,255,255,0.08)",
+    backdropFilter: "blur(10px)",
     borderRadius: 20,
     padding: 20,
     marginBottom: 20,
-    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.08)",
+    boxShadow: "0 8px 32px rgba(0,0,0,0.3)",
+    border: "1px solid rgba(255,255,255,0.1)",
     animation: "slideIn 0.3s ease",
   },
   input: {
     width: "100%",
     padding: "14px 16px",
     borderRadius: 12,
-    border: "1.5px solid #e0f2fe",
+    border: "1.5px solid rgba(255,255,255,0.1)",
     fontSize: 15,
     outline: "none",
     marginBottom: 16,
     boxSizing: "border-box",
+    background: "rgba(255,255,255,0.05)",
+    color: "#fff",
   },
   formSection: {
     marginBottom: 16,
@@ -525,7 +537,7 @@ const styles: Record<string, React.CSSProperties> = {
     display: "block",
     fontSize: 13,
     fontWeight: 600,
-    color: "#374151",
+    color: "rgba(255,255,255,0.8)",
     marginBottom: 8,
   },
   subjectPicker: {
@@ -536,10 +548,12 @@ const styles: Record<string, React.CSSProperties> = {
   subjectBtn: {
     padding: "6px 12px",
     borderRadius: 8,
-    border: "1.5px solid",
+    border: "1.5px solid rgba(255,255,255,0.1)",
     fontSize: 12,
     fontWeight: 500,
     cursor: "pointer",
+    background: "rgba(255,255,255,0.05)",
+    color: "rgba(255,255,255,0.8)",
   },
   priorityPicker: {
     display: "flex",
@@ -549,10 +563,12 @@ const styles: Record<string, React.CSSProperties> = {
     flex: 1,
     padding: "8px 12px",
     borderRadius: 8,
-    border: "1.5px solid",
+    border: "1.5px solid transparent",
     fontSize: 12,
     fontWeight: 600,
     cursor: "pointer",
+    background: "rgba(255,255,255,0.05)",
+    color: "rgba(255,255,255,0.7)",
   },
   formActions: {
     display: "flex",
@@ -563,9 +579,9 @@ const styles: Record<string, React.CSSProperties> = {
     flex: 1,
     padding: "12px 16px",
     borderRadius: 10,
-    border: "1px solid #e2e8f0",
-    background: "#fff",
-    color: "#64748b",
+    border: "1px solid rgba(255,255,255,0.1)",
+    background: "rgba(255,255,255,0.05)",
+    color: "rgba(255,255,255,0.7)",
     fontSize: 14,
     fontWeight: 600,
     cursor: "pointer",
@@ -575,11 +591,12 @@ const styles: Record<string, React.CSSProperties> = {
     padding: "12px 16px",
     borderRadius: 10,
     border: "none",
-    background: "linear-gradient(135deg, #0891b2, #06b6d4)",
+    background: "linear-gradient(135deg, #667eea, #764ba2)",
     color: "#fff",
     fontSize: 14,
     fontWeight: 600,
     cursor: "pointer",
+    boxShadow: "0 4px 15px rgba(102,126,234,0.4)",
   },
   todoList: {
     display: "flex",
@@ -593,14 +610,17 @@ const styles: Record<string, React.CSSProperties> = {
     gap: 14,
     padding: 16,
     borderRadius: 14,
-    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.06)",
-    border: "1px solid #f1f5f9",
+    boxShadow: "0 4px 20px rgba(0,0,0,0.3)",
+    border: "1px solid rgba(255,255,255,0.1)",
+    background: "rgba(255,255,255,0.08)",
+    backdropFilter: "blur(10px)",
+    transition: "all 0.2s ease",
   },
   checkbox: {
     width: 24,
     height: 24,
     borderRadius: 8,
-    border: "2px solid",
+    border: "2px solid rgba(255,255,255,0.2)",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -609,6 +629,7 @@ const styles: Record<string, React.CSSProperties> = {
     fontWeight: 700,
     cursor: "pointer",
     flexShrink: 0,
+    background: "rgba(255,255,255,0.05)",
   },
   todoContent: {
     flex: 1,
@@ -619,6 +640,7 @@ const styles: Record<string, React.CSSProperties> = {
     fontWeight: 500,
     marginBottom: 6,
     lineHeight: 1.4,
+    color: "#fff",
   },
   todoMeta: {
     display: "flex",
@@ -630,66 +652,76 @@ const styles: Record<string, React.CSSProperties> = {
     borderRadius: 6,
     fontSize: 11,
     fontWeight: 500,
+    background: "rgba(255,255,255,0.1)",
+    color: "rgba(255,255,255,0.7)",
   },
   deleteBtn: {
     width: 36,
     height: 36,
     borderRadius: 10,
     border: "none",
-    background: "#fef2f2",
+    background: "rgba(239,68,68,0.1)",
     fontSize: 16,
     cursor: "pointer",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+    color: "rgba(239,68,68,0.7)",
   },
   emptyState: {
     textAlign: "center",
     padding: 40,
-    background: "#fff",
+    background: "rgba(255,255,255,0.08)",
+    backdropFilter: "blur(10px)",
     borderRadius: 20,
-    border: "1px solid #f1f5f9",
+    boxShadow: "0 8px 32px rgba(0,0,0,0.3)",
+    border: "1px solid rgba(255,255,255,0.1)",
   },
   emptyIcon: {
     fontSize: 64,
     display: "block",
     marginBottom: 16,
+    color: "rgba(255,255,255,0.3)",
   },
   emptyTitle: {
     fontSize: 18,
     fontWeight: 700,
-    color: "#0f172a",
+    color: "#fff",
     margin: "0 0 8px",
   },
   emptyText: {
     fontSize: 14,
-    color: "#64748b",
+    color: "rgba(255,255,255,0.6)",
     margin: 0,
   },
   clearBtn: {
     width: "100%",
     padding: "12px 20px",
     borderRadius: 12,
-    border: "1px solid #e2e8f0",
-    background: "#fff",
-    color: "#64748b",
+    border: "1px solid rgba(255,255,255,0.1)",
+    background: "rgba(255,255,255,0.05)",
+    color: "rgba(255,255,255,0.6)",
     fontSize: 14,
     fontWeight: 500,
     cursor: "pointer",
     marginBottom: 32,
   },
   quickActions: {
-    background: "#fff",
+    background: "rgba(255,255,255,0.08)",
+    backdropFilter: "blur(10px)",
     borderRadius: 20,
     padding: 20,
-    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.08)",
-    border: "1px solid #f1f5f9",
+    boxShadow: "0 8px 32px rgba(0,0,0,0.3)",
+    border: "1px solid rgba(255,255,255,0.1)",
   },
   quickTitle: {
     fontSize: 16,
     fontWeight: 700,
-    color: "#0f172a",
+    color: "#fff",
     margin: "0 0 14px",
+    display: "flex",
+    alignItems: "center",
+    gap: 8,
   },
   quickGrid: {
     display: "grid",
@@ -702,12 +734,13 @@ const styles: Record<string, React.CSSProperties> = {
     gap: 10,
     padding: "12px 14px",
     borderRadius: 12,
-    border: "1px solid #f1f5f9",
-    background: "#f8fafc",
+    border: "1px solid rgba(255,255,255,0.1)",
+    background: "rgba(255,255,255,0.05)",
     fontSize: 13,
-    color: "#374151",
+    color: "rgba(255,255,255,0.8)",
     cursor: "pointer",
     textAlign: "left",
+    transition: "all 0.2s ease",
   },
   quickBtnIcon: {
     width: 32,

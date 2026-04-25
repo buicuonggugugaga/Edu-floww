@@ -218,10 +218,10 @@ export default function DashboardPage() {
   const trackExams = exams.filter((r: any) => trackSubjects.includes(r.subject));
   
   const avgScore = trackExams.length > 0
-    ? (trackExams.reduce((s: number, r: any) => s + (r.score / r.maxScore) * 10, 0) / trackExams.length)
+    ? (trackExams.filter((r: any) => r.maxScore > 0).reduce((s: number, r: any) => s + (r.score / r.maxScore) * 10, 0) / trackExams.filter((r: any) => r.maxScore > 0).length) || null
     : null;
   
-  const avgScore30 = avgScore !== null ? (avgScore * 3).toFixed(1) : null;
+  const avgScore30 = avgScore !== null && !isNaN(avgScore) ? (avgScore * 3).toFixed(1) : null;
   const schoolTarget = profile?.targetSchoolScore ?? 7;
   const uniTarget = profile?.targetUniScore ?? 18;
 
@@ -666,25 +666,25 @@ export default function DashboardPage() {
                         onClick={() => toggleTodo(todo.id)}
                         style={{
                           ...S.todoCheck,
-                          background: todo.completed ? "linear-gradient(135deg, #0891b2, #06b6d4)" : "#fff",
-                          borderColor: todo.completed ? "#0891b2" : "#d1d5db",
+                          background: todo.completed ? "linear-gradient(135deg, #667eea, #764ba2)" : "rgba(255,255,255,0.08)",
+                          borderColor: todo.completed ? "#667eea" : "rgba(255,255,255,0.2)",
                         }}
                       >
                         {todo.completed ? <Icons.Check /> : ""}
                       </button>
-                      <span style={{...S.todoText, textDecoration: todo.completed ? "line-through" : "none", opacity: todo.completed ? 0.6 : 1}}>
+                      <span style={{...S.todoText, textDecoration: todo.completed ? "line-through" : "none", opacity: todo.completed ? 0.5 : 1, color: todo.completed ? "rgba(255,255,255,0.5)" : "#fff"}}>
                         {todo.text}
                       </span>
                       <button 
                         onClick={() => deleteTodo(todo.id)} 
                         style={S.todoDel}
                         onMouseEnter={(e) => {
-                          e.currentTarget.style.background = "#fee2e2";
+                          e.currentTarget.style.background = "rgba(239,68,68,0.2)";
                           e.currentTarget.style.color = "#ef4444";
                         }}
                         onMouseLeave={(e) => {
                           e.currentTarget.style.background = "transparent";
-                          e.currentTarget.style.color = "#94a3b8";
+                          e.currentTarget.style.color = "rgba(255,255,255,0.3)";
                         }}
                       >
                         <Icons.Close />
@@ -694,7 +694,7 @@ export default function DashboardPage() {
                   ) : (
                     <div style={S.todoEmpty}>
                       <span style={S.todoEmptyIcon}><Icons.Party /></span>
-                      <p style={{ fontSize: 14, color: "#64748b", margin: 0 }}>Tất cả hoàn thành!</p>
+                      <p style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", margin: 0 }}>Tất cả hoàn thành!</p>
                     </div>
                   )}
               </div>
@@ -730,20 +730,20 @@ export default function DashboardPage() {
             </div>
 
             {/* Study Tips */}
-            <div style={{...S.widget, background: "linear-gradient(135deg, #fef3c7, #fde68a)"}}>
-              <h3 style={{...S.widgetTitle, color: "#92400e"}}><Icons.Lightbulb /> Mẹo học hôm nay</h3>
+            <div style={{...S.widget, background: "linear-gradient(135deg, rgba(102,126,234,0.15), rgba(118,75,162,0.15))"}}>
+              <h3 style={{...S.widgetTitle, color: "#fff"}}><Icons.Lightbulb /> Mẹo học hôm nay</h3>
               <div style={S.tipsList}>
                 <div style={S.tipItem}>
                   <span style={S.tipIcon}><Icons.Timer /></span>
-                  <p style={S.tipText}>Kỹ thuật Pomodoro: Học 25p, nghỉ 5p</p>
+                  <p style={{...S.tipText, color: "rgba(255,255,255,0.8)"}}>Kỹ thuật Pomodoro: Học 25p, nghỉ 5p</p>
                 </div>
                 <div style={S.tipItem}>
                   <span style={S.tipIcon}><Icons.BookOpen /></span>
-                  <p style={S.tipText}>Ôn bài trước khi ngủ để nhớ lâu hơn</p>
+                  <p style={{...S.tipText, color: "rgba(255,255,255,0.8)"}}>Ôn bài trước khi ngủ để nhớ lâu hơn</p>
                 </div>
                 <div style={S.tipItem}>
                   <span style={S.tipIcon}><Icons.Target /></span>
-                  <p style={S.tipText}>Đặt mục tiêu rõ ràng cho mỗi ngày</p>
+                  <p style={{...S.tipText, color: "rgba(255,255,255,0.8)"}}>Đặt mục tiêu rõ ràng cho mỗi ngày</p>
                 </div>
               </div>
             </div>
@@ -753,24 +753,24 @@ export default function DashboardPage() {
               <h3 style={S.widgetTitle}><Icons.TrendUp /> Thống kê</h3>
               <div style={S.statsGrid}>
                 <div style={S.statItem}>
-                  <span style={S.statNum}>{avgScore !== null ? avgScore.toFixed(1) : "—"}</span>
-                  <span style={S.statLabel}>Điểm TB</span>
+                  <span style={{...S.statNum, color: "#fff"}}>{avgScore !== null ? avgScore.toFixed(1) : "—"}</span>
+                  <span style={{...S.statLabel, color: "rgba(255,255,255,0.6)"}}>Điểm TB</span>
                 </div>
                 <div style={S.statItem}>
-                  <span style={S.statNum}>{trackExams.length}</span>
-                  <span style={S.statLabel}>Bài đã làm</span>
+                  <span style={{...S.statNum, color: "#fff"}}>{trackExams.length}</span>
+                  <span style={{...S.statLabel, color: "rgba(255,255,255,0.6)"}}>Bài đã làm</span>
                 </div>
                 <div style={S.statItem}>
-                  <span style={S.statNum}>
+                  <span style={{...S.statNum, color: "#fff"}}>
                     {trackExams.length > 0 
-                      ? Math.max(...trackExams.map((r: any) => (r.score / r.maxScore) * 10)).toFixed(1)
+                      ? Math.max(...trackExams.filter((r: any) => r.score != null && r.maxScore > 0).map((r: any) => (r.score / r.maxScore) * 10)).toFixed(1)
                       : "—"}
                   </span>
-                  <span style={S.statLabel}>Điểm cao nhất</span>
+                  <span style={{...S.statLabel, color: "rgba(255,255,255,0.6)"}}>Điểm cao nhất</span>
                 </div>
                 <div style={S.statItem}>
-                  <span style={S.statNum}>{completedTodos.length}</span>
-                  <span style={S.statLabel}>Đã hoàn thành</span>
+                  <span style={{...S.statNum, color: "#fff"}}>{completedTodos.length}</span>
+                  <span style={{...S.statLabel, color: "rgba(255,255,255,0.6)"}}>Đã hoàn thành</span>
                 </div>
               </div>
             </div>
@@ -789,18 +789,19 @@ const S: Record<string, React.CSSProperties> = {
     alignItems: "center",
     justifyContent: "center",
     gap: 16,
-    background: "#F4F7F6",
+    background: "linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%)",
   },
   spinner: {
     width: 40,
     height: 40,
     borderRadius: "50%",
-    border: "3px solid #e2e8f0",
-    borderTop: "3px solid #0891b2",
+    border: "3px solid rgba(255,255,255,0.2)",
+    borderTop: "3px solid #667eea",
     animation: "spin 1s linear infinite",
   },
   pageWrapper: {
-    background: "#F4F7F6",
+    background: "linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%)",
+    backgroundAttachment: "fixed",
     minHeight: "calc(100vh - 70px)",
     paddingTop: 0,
   },
@@ -849,14 +850,15 @@ const S: Record<string, React.CSSProperties> = {
     gap: 16,
   },
   statCard: {
-    background: "#fff",
+    background: "rgba(255,255,255,0.08)",
+    backdropFilter: "blur(10px)",
     borderRadius: 16,
     padding: "16px",
     display: "flex",
     alignItems: "center",
     gap: 12,
-    boxShadow: "0 4px 20px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0, 0, 0, 0.04)",
-    border: "1px solid rgba(255, 255, 255, 0.8)",
+    boxShadow: "0 4px 20px rgba(0, 0, 0, 0.3)",
+    border: "1px solid rgba(255, 255, 255, 0.1)",
     transition: "all 0.3s ease",
     cursor: "pointer",
     minHeight: 76,
@@ -879,12 +881,12 @@ const S: Record<string, React.CSSProperties> = {
   statNum: {
     fontSize: 22,
     fontWeight: 800,
-    color: "#0f172a",
+    color: "#fff",
     lineHeight: 1.2,
   },
   statLabel: {
     fontSize: 11,
-    color: "#64748b",
+    color: "rgba(255,255,255,0.6)",
     fontWeight: 500,
     marginTop: 2,
   },
@@ -914,12 +916,12 @@ const S: Record<string, React.CSSProperties> = {
   sectionTitle: {
     fontSize: 20,
     fontWeight: 700,
-    color: "#1f2937",
+    color: "#fff",
     margin: "0 0 16px",
   },
   viewAllLink: {
     fontSize: 14,
-    color: "#0891b2",
+    color: "#a5b4fc",
     textDecoration: "none",
     fontWeight: 600,
     transition: "color 0.2s",
@@ -934,12 +936,13 @@ const S: Record<string, React.CSSProperties> = {
     alignItems: "center",
     justifyContent: "center",
     gap: 14,
-    background: "#fff",
+    background: "rgba(255,255,255,0.08)",
+    backdropFilter: "blur(10px)",
     borderRadius: 16,
     padding: "18px 16px",
     textDecoration: "none",
-    boxShadow: "0 4px 16px rgba(0, 0, 0, 0.06)",
-    border: "2px solid transparent",
+    boxShadow: "0 4px 20px rgba(0, 0, 0, 0.3)",
+    border: "2px solid rgba(255,255,255,0.1)",
     transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
     cursor: "pointer",
     position: "relative" as const,
@@ -964,12 +967,12 @@ const S: Record<string, React.CSSProperties> = {
   actionTitle: {
     fontSize: 15,
     fontWeight: 700,
-    color: "#1f2937",
+    color: "#fff",
     margin: "0 0 4px",
   },
   actionDesc: {
     fontSize: 13,
-    color: "#6b7280",
+    color: "rgba(255,255,255,0.7)",
     margin: 0,
   },
   actionArrow: {
@@ -985,11 +988,12 @@ const S: Record<string, React.CSSProperties> = {
     gap: 16,
   },
   goalCard: {
-    background: "#fff",
+    background: "rgba(255,255,255,0.08)",
+    backdropFilter: "blur(10px)",
     borderRadius: 16,
     padding: 20,
-    boxShadow: "0 4px 16px rgba(0, 0, 0, 0.06)",
-    border: "1px solid rgba(0, 0, 0, 0.04)",
+    boxShadow: "0 4px 20px rgba(0, 0, 0, 0.3)",
+    border: "1px solid rgba(255,255,255,0.1)",
     transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
   },
   goalHeader: {
@@ -1002,32 +1006,33 @@ const S: Record<string, React.CSSProperties> = {
     width: 44,
     height: 44,
     borderRadius: 12,
-    background: "linear-gradient(135deg, #f0f9ff, #e0f2fe)",
+    background: "linear-gradient(135deg, rgba(102,126,234,0.2), rgba(118,75,162,0.2))",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    boxShadow: "0 2px 8px rgba(8, 145, 178, 0.15)",
+    boxShadow: "0 2px 8px rgba(102, 126, 234, 0.2)",
   },
   goalIcon: {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+    color: "#a5b4fc",
   },
   goalLabel: {
     fontSize: 13,
-    color: "#6b7280",
+    color: "rgba(255,255,255,0.6)",
     margin: "0 0 4px",
     fontWeight: 500,
   },
   goalValue: {
     fontSize: 17,
     fontWeight: 800,
-    color: "#1f2937",
+    color: "#fff",
     margin: 0,
   },
   progressTrack: {
     height: 10,
-    background: "#f3f4f6",
+    background: "rgba(255,255,255,0.1)",
     borderRadius: 99,
     overflow: "hidden",
     marginBottom: 12,
@@ -1041,7 +1046,7 @@ const S: Record<string, React.CSSProperties> = {
   },
   progressText: {
     fontSize: 13,
-    color: "#6b7280",
+    color: "rgba(255,255,255,0.6)",
     margin: 0,
     fontWeight: 500,
   },
@@ -1054,11 +1059,12 @@ const S: Record<string, React.CSSProperties> = {
     display: "flex",
     alignItems: "center",
     gap: 16,
-    background: "#fff",
+    background: "rgba(255,255,255,0.08)",
+    backdropFilter: "blur(10px)",
     borderRadius: 14,
     padding: 16,
-    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.04)",
-    border: "1px solid rgba(0, 0, 0, 0.04)",
+    boxShadow: "0 4px 20px rgba(0, 0, 0, 0.3)",
+    border: "1px solid rgba(255,255,255,0.1)",
     transition: "all 0.2s ease",
   },
   examScoreBox: {
@@ -1069,10 +1075,12 @@ const S: Record<string, React.CSSProperties> = {
     alignItems: "center",
     justifyContent: "center",
     flexShrink: 0,
+    background: "rgba(255,255,255,0.1)",
   },
   examScoreNum: {
     fontSize: 22,
     fontWeight: 800,
+    color: "#fff",
   },
   examDetails: {
     flex: 1,
@@ -1080,12 +1088,12 @@ const S: Record<string, React.CSSProperties> = {
   examName: {
     fontSize: 15,
     fontWeight: 600,
-    color: "#0f172a",
+    color: "#fff",
     margin: "0 0 4px",
   },
   examDate: {
     fontSize: 12,
-    color: "#94a3b8",
+    color: "rgba(255,255,255,0.5)",
     margin: 0,
   },
   examStatus: {
@@ -1093,18 +1101,22 @@ const S: Record<string, React.CSSProperties> = {
     borderRadius: 10,
     fontSize: 12,
     fontWeight: 600,
+    background: "rgba(255,255,255,0.1)",
+    color: "rgba(255,255,255,0.8)",
   },
   emptyCard: {
-    background: "#fff",
+    background: "rgba(255,255,255,0.08)",
+    backdropFilter: "blur(10px)",
     borderRadius: 16,
     padding: 40,
     textAlign: "center",
-    boxShadow: "0 4px 16px rgba(0, 0, 0, 0.05)",
-    border: "1px solid rgba(0, 0, 0, 0.04)",
+    boxShadow: "0 4px 20px rgba(0, 0, 0, 0.3)",
+    border: "1px solid rgba(255,255,255,0.1)",
   },
   emptyIcon: {
     display: "flex",
     justifyContent: "center",
+    color: "rgba(255,255,255,0.3)",
   },
   blogGrid: {
     display: "grid",
@@ -1112,11 +1124,12 @@ const S: Record<string, React.CSSProperties> = {
     gap: 16,
   },
   blogCard: {
-    background: "#fff",
+    background: "rgba(255,255,255,0.08)",
+    backdropFilter: "blur(10px)",
     borderRadius: 16,
     padding: 20,
-    boxShadow: "0 4px 16px rgba(0, 0, 0, 0.05)",
-    border: "1px solid rgba(0, 0, 0, 0.04)",
+    boxShadow: "0 4px 20px rgba(0, 0, 0, 0.3)",
+    border: "1px solid rgba(255,255,255,0.1)",
     transition: "all 0.25s ease",
     cursor: "pointer",
     display: "flex",
@@ -1141,11 +1154,13 @@ const S: Record<string, React.CSSProperties> = {
     borderRadius: 99,
     fontSize: 11,
     fontWeight: 600,
+    background: "rgba(255,255,255,0.1)",
+    color: "rgba(255,255,255,0.8)",
   },
   blogTitle: {
     fontSize: 15,
     fontWeight: 700,
-    color: "#0f172a",
+    color: "#fff",
     margin: "0 0 10px",
     lineHeight: 1.4,
     display: "-webkit-box",
@@ -1155,7 +1170,7 @@ const S: Record<string, React.CSSProperties> = {
   },
   blogExcerpt: {
     fontSize: 13,
-    color: "#64748b",
+    color: "rgba(255,255,255,0.6)",
     margin: "0 0 16px",
     lineHeight: 1.6,
     flex: 1,
@@ -1169,43 +1184,44 @@ const S: Record<string, React.CSSProperties> = {
     alignItems: "center",
     justifyContent: "space-between",
     paddingTop: 14,
-    borderTop: "1px solid #f1f5f9",
+    borderTop: "1px solid rgba(255,255,255,0.1)",
   },
   blogReadTime: {
     fontSize: 12,
-    color: "#94a3b8",
+    color: "rgba(255,255,255,0.5)",
     display: "flex",
     alignItems: "center",
     gap: 4,
   },
   blogLink: {
     fontSize: 13,
-    color: "#0891b2",
+    color: "#a5b4fc",
     fontWeight: 600,
   },
   emptyText: {
     fontSize: 14,
-    color: "#64748b",
+    color: "rgba(255,255,255,0.6)",
     margin: "0 0 20px",
   },
   emptyBtn: {
     display: "inline-block",
     padding: "12px 24px",
-    background: "linear-gradient(135deg, #0891b2, #06b6d4)",
+    background: "linear-gradient(135deg, #667eea, #764ba2)",
     color: "#fff",
     borderRadius: 12,
     fontSize: 14,
     fontWeight: 600,
     textDecoration: "none",
-    boxShadow: "0 4px 12px rgba(8, 145, 178, 0.3)",
+    boxShadow: "0 4px 15px rgba(102, 126, 234, 0.4)",
     transition: "all 0.25s ease",
   },
   widget: {
-    background: "#fff",
+    background: "rgba(255,255,255,0.08)",
+    backdropFilter: "blur(10px)",
     borderRadius: 16,
     padding: 20,
-    boxShadow: "0 4px 16px rgba(0, 0, 0, 0.05)",
-    border: "1px solid rgba(0, 0, 0, 0.04)",
+    boxShadow: "0 4px 20px rgba(0, 0, 0, 0.3)",
+    border: "1px solid rgba(255,255,255,0.1)",
   },
   widgetHead: {
     display: "flex",
@@ -1216,7 +1232,7 @@ const S: Record<string, React.CSSProperties> = {
   widgetTitle: {
     fontSize: 15,
     fontWeight: 700,
-    color: "#1f2937",
+    color: "#fff",
     margin: 0,
     display: "flex",
     alignItems: "center",
@@ -1224,7 +1240,7 @@ const S: Record<string, React.CSSProperties> = {
   },
   widgetLink: {
     fontSize: 13,
-    color: "#0891b2",
+    color: "#a5b4fc",
     textDecoration: "none",
     fontWeight: 600,
   },
@@ -1239,16 +1255,17 @@ const S: Record<string, React.CSSProperties> = {
     alignItems: "center",
     gap: 10,
     padding: "12px 14px",
-    background: "#f8fafc",
+    background: "rgba(255,255,255,0.05)",
     borderRadius: 12,
+    border: "1px solid rgba(255,255,255,0.1)",
     transition: "all 0.2s ease",
   },
   todoCheck: {
     width: 22,
     height: 22,
     borderRadius: 8,
-    border: "2px solid #d1d5db",
-    background: "#fff",
+    border: "2px solid rgba(255,255,255,0.2)",
+    background: "rgba(255,255,255,0.05)",
     cursor: "pointer",
     display: "flex",
     alignItems: "center",
@@ -1262,7 +1279,7 @@ const S: Record<string, React.CSSProperties> = {
   todoText: {
     flex: 1,
     fontSize: 14,
-    color: "#374151",
+    color: "rgba(255,255,255,0.8)",
   },
   todoDel: {
     width: 24,
@@ -1270,7 +1287,7 @@ const S: Record<string, React.CSSProperties> = {
     borderRadius: 8,
     border: "none",
     background: "transparent",
-    color: "#94a3b8",
+    color: "rgba(255,255,255,0.3)",
     fontSize: 16,
     cursor: "pointer",
     padding: 0,
@@ -1286,6 +1303,7 @@ const S: Record<string, React.CSSProperties> = {
     display: "flex",
     justifyContent: "center",
     marginBottom: 8,
+    color: "rgba(255,255,255,0.3)",
   },
   todoInputWrap: {
     display: "flex",
@@ -1295,17 +1313,19 @@ const S: Record<string, React.CSSProperties> = {
     flex: 1,
     padding: "12px 14px",
     borderRadius: 12,
-    border: "1.5px solid #e0f2fe",
+    border: "1.5px solid rgba(255,255,255,0.1)",
     fontSize: 14,
     outline: "none",
     transition: "border-color 0.2s",
+    background: "rgba(255,255,255,0.05)",
+    color: "#fff",
   },
   todoAddBtn: {
     width: 40,
     height: 40,
     borderRadius: 12,
     border: "none",
-    background: "linear-gradient(135deg, #0891b2, #06b6d4)",
+    background: "linear-gradient(135deg, #667eea, #764ba2)",
     color: "#fff",
     fontSize: 18,
     fontWeight: 600,
@@ -1314,14 +1334,15 @@ const S: Record<string, React.CSSProperties> = {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+    boxShadow: "0 4px 15px rgba(102, 126, 234, 0.4)",
   },
   todoCancelBtn: {
     width: 40,
     height: 40,
     borderRadius: 12,
-    border: "1px solid #e2e8f0",
-    background: "#fff",
-    color: "#64748b",
+    border: "1px solid rgba(255,255,255,0.1)",
+    background: "rgba(255,255,255,0.05)",
+    color: "rgba(255,255,255,0.6)",
     fontSize: 18,
     cursor: "pointer",
     padding: 0,
@@ -1333,9 +1354,9 @@ const S: Record<string, React.CSSProperties> = {
     width: "100%",
     padding: "14px",
     borderRadius: 14,
-    border: "2px dashed #0891b2",
+    border: "2px dashed rgba(102,126,234,0.5)",
     background: "transparent",
-    color: "#0891b2",
+    color: "#a5b4fc",
     fontSize: 14,
     fontWeight: 600,
     cursor: "pointer",
@@ -1356,11 +1377,24 @@ const S: Record<string, React.CSSProperties> = {
     alignItems: "center",
     justifyContent: "center",
     marginTop: 2,
+    color: "#a5b4fc",
   },
   tipText: {
     fontSize: 14,
-    color: "#78350f",
+    color: "rgba(255,255,255,0.8)",
     margin: 0,
     lineHeight: 1.5,
+  },
+  statsGrid: {
+    display: "grid",
+    gridTemplateColumns: "1fr 1fr",
+    gap: 12,
+  },
+  statItem: {
+    textAlign: "center",
+    padding: 12,
+    background: "rgba(255,255,255,0.05)",
+    borderRadius: 12,
+    border: "1px solid rgba(255,255,255,0.1)",
   },
 };
